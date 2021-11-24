@@ -1,13 +1,15 @@
-import React, { FC } from 'react';
-import { Button } from '@mui/material';
+import React, { FC } from "react";
+import { Button } from "@mui/material";
 interface ButtonProps {
   children?: React.ReactNode;
-  onClick: () => void;
+  onClick: (a: any) => void;
 }
 
 const SimpleButton: FC<ButtonProps> = ({ children, onClick }) => {
   return (
-      <Button  size="small" variant="outlined" onClick={onClick}>{children}</Button>
+    <Button size="small" variant="outlined" onClick={onClick}>
+      {children}
+    </Button>
   );
 };
 

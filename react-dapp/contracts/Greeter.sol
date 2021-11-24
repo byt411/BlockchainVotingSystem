@@ -1,32 +1,45 @@
 //SPDX-License-Identifier: Unlicense
-pragma solidity ^0.8.0;
-
+pragma solidity ^0.8.10;
 import "hardhat/console.sol";
 
 contract Greeter {
-    mapping(address => string) public greeting;
-    address[] public addresses;
+    struct VoteOption {
+        string name;
+        string acronym;
+    }
+
+    struct Vote {
+        uint256 timestamp;
+        VoteOption vote;
+    }
+    mapping(address => VoteOption) public votes;
+    VoteOption[] options;
 
     constructor(string memory _greeting) {
         console.log("Deploying a Greeter:");
-        addresses = new address[](10);
+        options.push(VoteOption("Partido Popular", "PP"));
+        options.push(VoteOption("Partido Socialista Obrero Espanol", "PSOE"));
+        options.push(VoteOption("Unidas Podemos", "UP"));
+        options.push(VoteOption("Ciudadanos", "Cs"));
     }
 
-    function greet(address user) public view returns (string memory) {
-        return greeting[user];
+    function getOptions()
+        public
+        view
+        returns (VoteOption[] memory retrievedOptions)
+    {
+        return options;
     }
 
-    function setGreeting(address user, string memory _greeting) public {
-        greeting[user] = _greeting;
-        addresses.push(user);
+    function getCurrentVote(address user)
+        public
+        view
+        returns (VoteOption memory)
+    {
+        return votes[user];
     }
 
-    function getAllGreetings() public view returns (string[] memory) {
-        string[] memory allGreetings = new string[](addresses.length);
-        for (uint256 i = 0; i < addresses.length; i++) {
-            allGreetings[i] = greeting[addresses[i]];
-        }
-
-        return allGreetings;
+    function recordVote(address user, VoteOption memory _vote) public {
+        votes[user] = _vote;
     }
 }
