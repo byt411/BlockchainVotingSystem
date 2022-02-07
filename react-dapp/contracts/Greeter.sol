@@ -6,6 +6,7 @@ contract Greeter {
     struct VoteOption {
         string name;
         string acronym;
+        string logourl;
     }
 
     struct Vote {
@@ -16,11 +17,34 @@ contract Greeter {
     VoteOption[] options;
 
     constructor(string memory _greeting) {
-        console.log("Deploying a Greeter:");
-        options.push(VoteOption("Partido Popular", "PP"));
-        options.push(VoteOption("Partido Socialista Obrero Espanol", "PSOE"));
-        options.push(VoteOption("Unidas Podemos", "UP"));
-        options.push(VoteOption("Ciudadanos", "Cs"));
+        options.push(
+            VoteOption(
+                "Partido Popular",
+                "PP",
+                "https://upload.wikimedia.org/wikipedia/commons/3/38/PP_icono_2019.svg"
+            )
+        );
+        options.push(
+            VoteOption(
+                "Partido Socialista Obrero Espanol",
+                "PSOE",
+                "https://upload.wikimedia.org/wikipedia/commons/4/41/Logotipo_del_PSOE.svg"
+            )
+        );
+        options.push(
+            VoteOption(
+                "Unidas Podemos",
+                "UP",
+                "https://upload.wikimedia.org/wikipedia/commons/7/7d/Logo_Unidas_Podemos_2019b.png"
+            )
+        );
+        options.push(
+            VoteOption(
+                "Ciudadanos",
+                "Cs",
+                "https://upload.wikimedia.org/wikipedia/commons/7/76/Logo_oficial_Ciudadanos.svg"
+            )
+        );
     }
 
     function getOptions()

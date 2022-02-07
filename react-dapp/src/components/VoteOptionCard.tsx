@@ -10,9 +10,15 @@ interface VoteOptionProps {
   acronym: string;
   name: string;
   onClick: (vote: VoteOption) => Promise<void>;
+  logourl: string;
 }
 
-const VoteOptionCard: FC<VoteOptionProps> = ({ acronym, name, onClick }) => {
+const VoteOptionCard: FC<VoteOptionProps> = ({
+  acronym,
+  name,
+  onClick,
+  logourl,
+}) => {
   return (
     <Card
       sx={{ minWidth: 400 }}
@@ -24,6 +30,7 @@ const VoteOptionCard: FC<VoteOptionProps> = ({ acronym, name, onClick }) => {
       }}
     >
       <CardContent>
+        <img src={logourl} width="80px" height="80px" />
         <Typography variant="h5" component="div" color="white">
           {name}
         </Typography>

@@ -8,8 +8,9 @@ import SimpleInput from "./components/SimpleInput";
 import PersistentDrawerLeft from "./components/PersistentDrawerLeft";
 import VoteOption from "./types/VoteOption";
 import VoteOptionCard from "./components/VoteOptionCard";
+import { Grid } from "@mui/material";
 declare let window: any;
-const greeterAddress = "0xd2ec51841904c828E2CE5200107B268D105fA1F8";
+const greeterAddress = "0x73ad7864C2Ad7400a3340a04972Dc76c9A6Be024";
 
 function App() {
   // store greeting in local state
@@ -21,6 +22,15 @@ function App() {
       method: "eth_requestAccounts",
     });
     return address;
+  }
+
+  function randomize(input: any[]) {
+    let array = input.slice();
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
   }
 
   // call the smart contract, read the current greeting value
@@ -36,7 +46,6 @@ function App() {
       try {
         const data = await contract.getCurrentVote(address[0]);
         setCurrentVote(data.name);
-        console.log("data: ", data);
       } catch (err) {
         console.log("Error: ", err);
       }
@@ -66,8 +75,8 @@ function App() {
       );
       try {
         const options = await contract.getOptions();
-        console.log("options: ", options);
-        setOptions(options);
+        const randomized = randomize(options);
+        setOptions(randomized);
       } catch (err) {
         console.log("Error: ", err);
       }
@@ -76,8 +85,11 @@ function App() {
 
   useEffect(() => {
     getCurrentVote();
+  }, [currentVote]);
+
+  useEffect(() => {
     getOptions();
-  });
+  }, []);
 
   return (
     <div className="App">
@@ -86,19 +98,21 @@ function App() {
         <div>
           <PersistentDrawerLeft />
         </div>
-
-        {voteOptions.map((x) => (
-          <>
-            <div>
-              <VoteOptionCard
-                onClick={() => recordVote(x)}
-                name={x.name}
-                acronym={x.acronym}
-              ></VoteOptionCard>
-            </div>
-            <br />
-          </>
-        ))}
+        <Grid container spacing={2} columns={2}>
+          {voteOptions.map((x) => (
+            <>
+              <Grid item>
+                <VoteOptionCard
+                  onClick={() => recordVote(x)}
+                  name={x.name}
+                  acronym={x.acronym}
+                  logourl={x.logourl}
+                ></VoteOptionCard>
+              </Grid>
+              <br />
+            </>
+          ))}
+        </Grid>
       </header>
     </div>
   );
