@@ -2,15 +2,17 @@ import React, { FC } from "react";
 import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
 import CardContent from "@mui/material/CardContent";
-import { CardActions } from "@mui/material";
+import { Button, CardActions } from "@mui/material";
 import SimpleButton from "./SimpleButton";
 import VoteOption from "../types/VoteOption";
 import { borders } from "@mui/system";
+import DoneIcon from "@mui/icons-material/Done";
 interface VoteOptionProps {
   acronym: string;
   name: string;
   onClick: (vote: VoteOption) => Promise<void>;
   logourl: string;
+  disabled?: boolean;
 }
 
 const VoteOptionCard: FC<VoteOptionProps> = ({
@@ -18,10 +20,11 @@ const VoteOptionCard: FC<VoteOptionProps> = ({
   name,
   onClick,
   logourl,
+  disabled = false,
 }) => {
   return (
     <Card
-      sx={{ minWidth: 400 }}
+      sx={{ minWidth: 400, minHeight: 260 }}
       style={{
         backgroundColor: "#0b0c10",
         justifyContent: "center",
@@ -39,7 +42,13 @@ const VoteOptionCard: FC<VoteOptionProps> = ({
         </Typography>
       </CardContent>
       <CardActions style={{ justifyContent: "center" }}>
-        <SimpleButton onClick={onClick}>Vote</SimpleButton>
+        {!disabled ? (
+          <SimpleButton onClick={onClick}>Vote</SimpleButton>
+        ) : (
+          <Button variant="outlined">
+            <DoneIcon />
+          </Button>
+        )}
       </CardActions>
     </Card>
   );

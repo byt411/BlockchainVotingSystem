@@ -14,7 +14,7 @@ const greeterAddress = "0x73ad7864C2Ad7400a3340a04972Dc76c9A6Be024";
 
 function App() {
   // store greeting in local state
-  const [currentVote, setCurrentVote] = useState<VoteOption>();
+  const [currentVote, setCurrentVote] = useState<String>("");
   const [voteOptions, setOptions] = useState<VoteOption[]>([]);
   // request access to the user's MetaMask account
   async function requestAccount() {
@@ -100,17 +100,24 @@ function App() {
         </div>
         <Grid container spacing={2} columns={2}>
           {voteOptions.map((x) => (
-            <>
-              <Grid item>
+            <Grid item>
+              {x.name !== currentVote ? (
                 <VoteOptionCard
                   onClick={() => recordVote(x)}
                   name={x.name}
                   acronym={x.acronym}
                   logourl={x.logourl}
                 ></VoteOptionCard>
-              </Grid>
-              <br />
-            </>
+              ) : (
+                <VoteOptionCard
+                  onClick={() => recordVote(x)}
+                  name={x.name}
+                  acronym={x.acronym}
+                  logourl={x.logourl}
+                  disabled={true}
+                ></VoteOptionCard>
+              )}
+            </Grid>
           ))}
         </Grid>
       </header>
