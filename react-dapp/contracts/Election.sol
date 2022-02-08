@@ -2,7 +2,7 @@
 pragma solidity ^0.8.10;
 import "hardhat/console.sol";
 
-contract Greeter {
+contract Election {
     struct VoteOption {
         string name;
         string acronym;
@@ -16,7 +16,9 @@ contract Greeter {
     mapping(address => VoteOption) public votes;
     VoteOption[] options;
 
-    constructor(string memory _greeting) {
+    mapping(string => uint32) public voteCounts;
+
+    constructor() {
         options.push(
             VoteOption(
                 "Partido Popular",
@@ -45,6 +47,10 @@ contract Greeter {
                 "https://upload.wikimedia.org/wikipedia/commons/7/76/Logo_oficial_Ciudadanos.svg"
             )
         );
+
+        for (uint32 i = 0; i < options.length; i++) {
+            voteCounts[options[i].name] = 0;
+        }
     }
 
     function getOptions()
@@ -63,7 +69,19 @@ contract Greeter {
         return votes[user];
     }
 
+    function getVoteCounts() public view returns (uint32[] memory) {
+        uint32[] memory output = new uint32[](options.length);
+        for (uint32 i = 0; i < options.length; i++) {
+            output[i] = voteCounts[options[i].name];
+        }
+        return output;
+    }
+
     function recordVote(address user, VoteOption memory _vote) public {
+        if (voteCounts[votes[user].name] != 0) {
+            voteCounts[votes[user].name] -= 1;
+        }
         votes[user] = _vote;
+        voteCounts[votes[user].name] += 1;
     }
 }

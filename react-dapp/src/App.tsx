@@ -2,15 +2,15 @@ import "./App.css";
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { ethers } from "ethers";
-import Greeter from "./artifacts/contracts/Greeter.sol/Greeter.json";
+import Election from "./artifacts/contracts/Election.sol/Election.json";
 import SimpleButton from "./components/SimpleButton";
 import SimpleInput from "./components/SimpleInput";
 import PersistentDrawerLeft from "./components/PersistentDrawerLeft";
 import VoteOption from "./types/VoteOption";
 import VoteOptionCard from "./components/VoteOptionCard";
-import { Grid } from "@mui/material";
+import { Button, Grid } from "@mui/material";
 declare let window: any;
-const greeterAddress = "0x73ad7864C2Ad7400a3340a04972Dc76c9A6Be024";
+const electionAddress = "0x088EC67095a20ab7fC9D4e0c4AAF7B2CFd255c41";
 
 function App() {
   // store greeting in local state
@@ -39,13 +39,31 @@ function App() {
       const address = await requestAccount();
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const contract = new ethers.Contract(
-        greeterAddress,
-        Greeter.abi,
+        electionAddress,
+        Election.abi,
         provider
       );
       try {
         const data = await contract.getCurrentVote(address[0]);
         setCurrentVote(data.name);
+      } catch (err) {
+        console.log("Error: ", err);
+      }
+    }
+  }
+
+  async function getVoteCounts() {
+    if (typeof window.ethereum !== "undefined") {
+      const address = await requestAccount();
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const contract = new ethers.Contract(
+        electionAddress,
+        Election.abi,
+        provider
+      );
+      try {
+        const data = await contract.getVoteCounts();
+        console.log(data);
       } catch (err) {
         console.log("Error: ", err);
       }
@@ -58,7 +76,11 @@ function App() {
       const address = await requestAccount();
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
-      const contract = new ethers.Contract(greeterAddress, Greeter.abi, signer);
+      const contract = new ethers.Contract(
+        electionAddress,
+        Election.abi,
+        signer
+      );
       const transaction = await contract.recordVote(address[0], vote);
       await transaction.wait();
       getCurrentVote();
@@ -69,8 +91,8 @@ function App() {
     if (typeof window.ethereum !== "undefined") {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const contract = new ethers.Contract(
-        greeterAddress,
-        Greeter.abi,
+        electionAddress,
+        Election.abi,
         provider
       );
       try {
@@ -120,6 +142,7 @@ function App() {
             </Grid>
           ))}
         </Grid>
+        <Button onClick={getVoteCounts}>Get counts</Button>
       </header>
     </div>
   );
