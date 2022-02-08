@@ -9,6 +9,8 @@ import PersistentDrawerLeft from "./components/PersistentDrawerLeft";
 import VoteOption from "./types/VoteOption";
 import VoteOptionCard from "./components/VoteOptionCard";
 import { Button, Grid } from "@mui/material";
+import Dialog from "@mui/material/Dialog";
+import SimpleDialog from "./components/SimpleDialog";
 declare let window: any;
 const electionAddress = "0x088EC67095a20ab7fC9D4e0c4AAF7B2CFd255c41";
 
@@ -16,6 +18,7 @@ function App() {
   // store greeting in local state
   const [currentVote, setCurrentVote] = useState<String>("");
   const [voteOptions, setOptions] = useState<VoteOption[]>([]);
+  const [votes, setVotes] = useState<number[]>([]);
   // request access to the user's MetaMask account
   async function requestAccount() {
     const address = await window.ethereum.request({
@@ -51,7 +54,19 @@ function App() {
       }
     }
   }
+  const emails = ["username@gmail.com", "user02@gmail.com"];
+  const [open, setOpen] = React.useState(false);
+  const [selectedValue, setSelectedValue] = React.useState(emails[1]);
 
+  const handleClickOpen = () => {
+    getVoteCounts();
+    setOpen(true);
+  };
+
+  const handleClose = (value: string) => {
+    setOpen(false);
+    setSelectedValue(value);
+  };
   async function getVoteCounts() {
     if (typeof window.ethereum !== "undefined") {
       const address = await requestAccount();
@@ -63,7 +78,7 @@ function App() {
       );
       try {
         const data = await contract.getVoteCounts();
-        console.log(data);
+        setVotes(data);
       } catch (err) {
         console.log("Error: ", err);
       }
@@ -142,7 +157,14 @@ function App() {
             </Grid>
           ))}
         </Grid>
-        <Button onClick={getVoteCounts}>Get counts</Button>
+        <Button onClick={handleClickOpen}>Get counts</Button>
+        <SimpleDialog
+          selectedValue={selectedValue}
+          open={open}
+          onClose={handleClose}
+          options={voteOptions}
+          votes={votes}
+        />
       </header>
     </div>
   );
