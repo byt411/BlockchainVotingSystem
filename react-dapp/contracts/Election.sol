@@ -3,6 +3,7 @@ pragma solidity ^0.8.10;
 import "hardhat/console.sol";
 
 contract Election {
+    uint256 endtime;
     struct VoteOption {
         string name;
         string acronym;
@@ -51,6 +52,7 @@ contract Election {
         for (uint32 i = 0; i < options.length; i++) {
             voteCounts[options[i].name] = 0;
         }
+        endtime = block.timestamp + 300;
     }
 
     function getOptions()
@@ -69,7 +71,12 @@ contract Election {
         return votes[user];
     }
 
+    function getEndTime() public view returns (uint256) {
+        return endtime;
+    }
+
     function getVoteCounts() public view returns (uint32[] memory) {
+        require(block.timestamp > endtime, "Election is still in progress.");
         uint32[] memory output = new uint32[](options.length);
         for (uint32 i = 0; i < options.length; i++) {
             output[i] = voteCounts[options[i].name];
@@ -78,6 +85,7 @@ contract Election {
     }
 
     function recordVote(address user, VoteOption memory _vote) public {
+        require(block.timestamp < endtime, "Election has closed.");
         if (voteCounts[votes[user].name] != 0) {
             voteCounts[votes[user].name] -= 1;
         }

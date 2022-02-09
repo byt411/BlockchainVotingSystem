@@ -12,12 +12,13 @@ import { Button, Grid } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import SimpleDialog from "./components/SimpleDialog";
 declare let window: any;
-const electionAddress = "0x088EC67095a20ab7fC9D4e0c4AAF7B2CFd255c41";
+const electionAddress = "0xb93cc7eAEf8825F8EA64Ad51a8034C6B505D993b";
 
 function App() {
   // store greeting in local state
   const [currentVote, setCurrentVote] = useState<String>("");
   const [voteOptions, setOptions] = useState<VoteOption[]>([]);
+  const [randomizedOptions, setRandomOptions] = useState<VoteOption[]>([]);
   const [votes, setVotes] = useState<number[]>([]);
   // request access to the user's MetaMask account
   async function requestAccount() {
@@ -49,8 +50,8 @@ function App() {
       try {
         const data = await contract.getCurrentVote(address[0]);
         setCurrentVote(data.name);
-      } catch (err) {
-        console.log("Error: ", err);
+      } catch (err: unknown) {
+        handleRevert(err);
       }
     }
   }
@@ -79,9 +80,17 @@ function App() {
       try {
         const data = await contract.getVoteCounts();
         setVotes(data);
-      } catch (err) {
-        console.log("Error: ", err);
+      } catch (err: unknown) {
+        handleRevert(err);
       }
+    }
+  }
+
+  function handleRevert(err: unknown) {
+    if (err instanceof Error) {
+      console.log(err.message);
+      const message = err.message.match(/"message":"(.*?)"/)![0].slice(11, -1);
+      alert(message.replace("execution reverted: ", ""));
     }
   }
 
@@ -96,9 +105,13 @@ function App() {
         Election.abi,
         signer
       );
-      const transaction = await contract.recordVote(address[0], vote);
-      await transaction.wait();
-      getCurrentVote();
+      try {
+        const transaction = await contract.recordVote(address[0], vote);
+        await transaction.wait();
+        getCurrentVote();
+      } catch (err: unknown) {
+        handleRevert(err);
+      }
     }
   }
 
@@ -112,8 +125,8 @@ function App() {
       );
       try {
         const options = await contract.getOptions();
-        const randomized = randomize(options);
-        setOptions(randomized);
+        setOptions(options);
+        setRandomOptions(randomize(options));
       } catch (err) {
         console.log("Error: ", err);
       }
@@ -127,7 +140,6 @@ function App() {
   useEffect(() => {
     getOptions();
   }, []);
-
   return (
     <div className="App">
       <header className="App-header">
@@ -136,7 +148,7 @@ function App() {
           <PersistentDrawerLeft />
         </div>
         <Grid container spacing={2} columns={2}>
-          {voteOptions.map((x) => (
+          {randomizedOptions.map((x) => (
             <Grid item>
               {x.name !== currentVote ? (
                 <VoteOptionCard
