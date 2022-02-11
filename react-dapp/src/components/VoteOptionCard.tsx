@@ -5,7 +5,6 @@ import CardContent from "@mui/material/CardContent";
 import { Button, CardActions } from "@mui/material";
 import SimpleButton from "./SimpleButton";
 import VoteOption from "../types/VoteOption";
-import { borders } from "@mui/system";
 import DoneIcon from "@mui/icons-material/Done";
 interface VoteOptionProps {
   acronym: string;
@@ -33,7 +32,7 @@ const VoteOptionCard: FC<VoteOptionProps> = ({
       }}
     >
       <CardContent>
-        <img src={logourl} width="80px" height="80px" />
+        <img src={logourl} width="80px" height="80px" alt={name} />
         <Typography variant="h5" component="div" color="white">
           {name}
         </Typography>
