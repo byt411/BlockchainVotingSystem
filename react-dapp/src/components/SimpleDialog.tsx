@@ -12,6 +12,7 @@ import AddIcon from "@mui/icons-material/Add";
 import Typography from "@mui/material/Typography";
 import { blue } from "@mui/material/colors";
 import VoteOption from "../types/VoteOption";
+import VoteResult from "../types/VoteResult";
 
 const emails = ["username@gmail.com", "user02@gmail.com"];
 
@@ -19,15 +20,13 @@ interface SimpleDialogProps {
   open: boolean;
   selectedValue: string;
   onClose: (value: string) => void;
-  options: VoteOption[];
-  votes: number[];
+  votes: VoteResult[];
 }
 
 const SimpleDialog: FC<SimpleDialogProps> = ({
   open,
   selectedValue,
   onClose,
-  options,
   votes,
 }) => {
   const handleClose = () => {
@@ -41,9 +40,9 @@ const SimpleDialog: FC<SimpleDialogProps> = ({
     <Dialog onClose={handleClose} open={open}>
       <DialogTitle>Set backup account</DialogTitle>
       <List>
-        {options.map((party, index) => (
+        {votes.map((party, index) => (
           <ListItem>
-            {party.name}, {votes[index]}
+            {party.option.name}, {party.count}
           </ListItem>
         ))}
       </List>

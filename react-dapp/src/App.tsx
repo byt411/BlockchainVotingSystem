@@ -11,15 +11,16 @@ import VoteOptionCard from "./components/VoteOptionCard";
 import { Button, Grid } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import SimpleDialog from "./components/SimpleDialog";
+import VoteResult from "./types/VoteResult";
 declare let window: any;
-const electionAddress = "0xb93cc7eAEf8825F8EA64Ad51a8034C6B505D993b";
+const electionAddress = "0xa78EEA8fb1A986317234c6d5a944351084b9837a";
 
 function App() {
   // store greeting in local state
   const [currentVote, setCurrentVote] = useState<String>("");
   const [voteOptions, setOptions] = useState<VoteOption[]>([]);
   const [randomizedOptions, setRandomOptions] = useState<VoteOption[]>([]);
-  const [votes, setVotes] = useState<number[]>([]);
+  const [votes, setVotes] = useState<VoteResult[]>([]);
   // request access to the user's MetaMask account
   async function requestAccount() {
     const address = await window.ethereum.request({
@@ -106,7 +107,7 @@ function App() {
         signer
       );
       try {
-        const transaction = await contract.recordVote(address[0], vote);
+        const transaction = await contract.recordVote(address[0], vote.name);
         await transaction.wait();
         getCurrentVote();
       } catch (err: unknown) {
@@ -174,7 +175,6 @@ function App() {
           selectedValue={selectedValue}
           open={open}
           onClose={handleClose}
-          options={voteOptions}
           votes={votes}
         />
       </header>
