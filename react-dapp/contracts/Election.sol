@@ -1,6 +1,5 @@
 //SPDX-License-Identifier: Unlicense
-pragma solidity ^0.8.10;
-import "hardhat/console.sol";
+pragma solidity ^0.8.12;
 
 contract Election {
     uint256 endtime;
@@ -14,11 +13,13 @@ contract Election {
         VoteOption option;
         uint32 count;
     }
+
+    string[] votes;
+    address[] voters;
+    mapping(address => uint256) voteMap;
+    mapping(string => uint256) optionMap;
     VoteOption[4] options;
     VoteResult[4] results;
-
-    mapping(address => VoteOption) voteMap;
-    mapping(string => uint8) optionIndex;
 
     constructor() {
         options[0] = VoteOption(
@@ -41,11 +42,10 @@ contract Election {
             "Cs",
             "https://upload.wikimedia.org/wikipedia/commons/7/76/Logo_oficial_Ciudadanos.svg"
         );
-
-        for (uint256 i = 0; i < options.length; i++) {
+        for (uint256 i = 0; i < results.length; i++) {
             results[i] = VoteResult(options[i], 0);
+            optionMap[options[i].name] = i;
         }
-
         endtime = block.timestamp + 180;
     }
 
@@ -53,16 +53,18 @@ contract Election {
         return options;
     }
 
-    function getCurrentVote(address user)
-        public
-        view
-        returns (VoteOption memory)
-    {
-        return voteMap[user];
+    function getCurrentVote(address user) public view returns (string memory) {
+        return votes[voteMap[user]];
     }
 
     function getEndTime() public view returns (uint256) {
         return endtime;
+    }
+
+    function tallyVotes() public {
+        for (uint256 i = 0; i < votes.length; i++) {
+            results[optionMap[votes[i]]].count += 1;
+        }
     }
 
     function getVoteCounts() public view returns (VoteResult[4] memory) {
@@ -70,14 +72,14 @@ contract Election {
         return results;
     }
 
-    function recordVote(address user, string memory _vote) public {
+    function recordVote(string memory _vote) public {
         require(block.timestamp < endtime, "Election has closed.");
-        VoteOption memory recordedVote = options[optionIndex[_vote]];
-        VoteOption memory existingVote = voteMap[user];
-        if (results[optionIndex[existingVote.name]].count != 0) {
-            results[optionIndex[existingVote.name]].count -= 1;
+
+        if (voteMap[msg.sender] != 0) {
+            votes[voteMap[msg.sender]] = votes[votes.length - 1];
+            votes.pop();
         }
-        voteMap[user] = recordedVote;
-        results[optionIndex[recordedVote.name]].count += 1;
+        votes.push(_vote);
+        voteMap[msg.sender] = votes.length - 1;
     }
 }

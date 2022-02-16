@@ -11,7 +11,7 @@ import { Button, Grid } from "@mui/material";
 import SimpleDialog from "./components/SimpleDialog";
 import VoteResult from "./types/VoteResult";
 declare let window: any;
-const electionAddress = "0xa78EEA8fb1A986317234c6d5a944351084b9837a";
+const electionAddress = "0x5132c684c329abADF509babA7cC4d3777212FF15";
 
 function Voting() {
   // store greeting in local state
@@ -47,7 +47,7 @@ function Voting() {
       );
       try {
         const data = await contract.getCurrentVote(address[0]);
-        setCurrentVote(data.name);
+        setCurrentVote(data);
       } catch (err: unknown) {
         handleRevert(err);
       }
@@ -69,12 +69,14 @@ function Voting() {
   async function getVoteCounts() {
     if (typeof window.ethereum !== "undefined") {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
       const contract = new ethers.Contract(
         electionAddress,
         Election.abi,
-        provider
+        signer
       );
       try {
+        //await contract.tallyVotes();
         const data = await contract.getVoteCounts();
         setVotes(data);
       } catch (err: unknown) {
@@ -103,7 +105,10 @@ function Voting() {
         signer
       );
       try {
-        const transaction = await contract.recordVote(address[0], vote.name);
+        const transaction = await contract.recordVote(vote.name, {
+          gasPrice: provider.getGasPrice(),
+          gasLimit: 1000000,
+        });
         await transaction.wait();
         getCurrentVote();
       } catch (err: unknown) {
