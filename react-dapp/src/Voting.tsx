@@ -11,7 +11,7 @@ import { Button, Grid } from "@mui/material";
 import SimpleDialog from "./components/SimpleDialog";
 import VoteResult from "./types/VoteResult";
 declare let window: any;
-const electionAddress = "0x5132c684c329abADF509babA7cC4d3777212FF15";
+const electionAddress = "0x4939c201302d383ab5bca7828df6054582695bf5";
 
 function Voting() {
   // store greeting in local state
