@@ -7,6 +7,7 @@ contract Election {
         string name;
         string acronym;
         string logourl;
+        uint16 power;
     }
 
     struct VoteResult {
@@ -25,22 +26,26 @@ contract Election {
         options[0] = VoteOption(
             "Partido Popular",
             "PP",
-            "https://upload.wikimedia.org/wikipedia/commons/3/38/PP_icono_2019.svg"
+            "https://upload.wikimedia.org/wikipedia/commons/3/38/PP_icono_2019.svg",
+            0
         );
         options[1] = VoteOption(
             "Partido Socialista Obrero Espanol",
             "PSOE",
-            "https://upload.wikimedia.org/wikipedia/commons/4/41/Logotipo_del_PSOE.svg"
+            "https://upload.wikimedia.org/wikipedia/commons/4/41/Logotipo_del_PSOE.svg",
+            1
         );
         options[2] = VoteOption(
             "Unidas Podemos",
             "UP",
-            "https://upload.wikimedia.org/wikipedia/commons/7/7d/Logo_Unidas_Podemos_2019b.png"
+            "https://upload.wikimedia.org/wikipedia/commons/7/7d/Logo_Unidas_Podemos_2019b.png",
+            2
         );
         options[3] = VoteOption(
             "Ciudadanos",
             "Cs",
-            "https://upload.wikimedia.org/wikipedia/commons/7/76/Logo_oficial_Ciudadanos.svg"
+            "https://upload.wikimedia.org/wikipedia/commons/7/76/Logo_oficial_Ciudadanos.svg",
+            3
         );
         for (uint256 i = 0; i < results.length; i++) {
             results[i] = VoteResult(options[i], 0);
@@ -66,10 +71,11 @@ contract Election {
         return endtime;
     }
 
-    function tallyVotes() public {
-        for (uint256 i = 1; i < votes.length; i++) {
-            results[optionMap[votes[i]]].count += 1;
-        }
+    function tallyVotes() public view returns (string[] memory) {
+        // for (uint256 i = 1; i < votes.length; i++) {
+        // results[optionMap[votes[i]]].count += 1;
+        // }
+        return votes;
     }
 
     function getVoteCounts() public view returns (VoteResult[4] memory) {
