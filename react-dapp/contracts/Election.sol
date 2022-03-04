@@ -52,7 +52,7 @@ contract Election {
             optionMap[options[i].name] = i;
         }
         votes.push("");
-        endtime = block.timestamp + 180;
+        endtime = block.timestamp + 300;
     }
 
     function getOptions() public view returns (VoteOption[4] memory) {
@@ -84,7 +84,7 @@ contract Election {
     }
 
     function recordVote(string memory _vote) public {
-        require(block.timestamp < endtime, "Election has closed.");
+        // require(block.timestamp < endtime, "Election has closed.");
         if (bytes(votes[voteMap[msg.sender]]).length == 0) {
             votes.push(_vote);
             voteMap[msg.sender] = votes.length - 1;

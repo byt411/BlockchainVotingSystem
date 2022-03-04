@@ -11,7 +11,8 @@ import { Button, Grid } from "@mui/material";
 import SimpleDialog from "./components/SimpleDialog";
 import VoteResult from "./types/VoteResult";
 declare let window: any;
-const electionAddress = "0xf97eb5b223ED970417Bb1345341D81E6264729b2";
+const maxVotes = 9;
+const electionAddress = "0xbac0307c86a27c43790143429AAcAc1E4a9c6c0F";
 const pubKey = new paillierBigint.PublicKey(
   BigInt(
     "23887010820738940184376978775095137097407075755820241849675667344549655040826893898651499174154305754407685907017166822246885335055988915217054904210996835969645724149669253130435058417145607207943175901764713928131407873743249832381758479458745795300753271834595741442143133427988627165702813027003607579954439231340603435941053484359383805495562303162716634779567233298478083227766633641978636417664321938974764772327358877579601671564707952644543376217346716374851740059803819350790007564414568677497844187360531465492798178734397634076077444668757697506675393707023062527238109389708654148401762219555160774548261"
@@ -32,6 +33,7 @@ const privKey = new paillierBigint.PrivateKey(
 
 function Voting() {
   // store greeting in local state
+  const [options, setOptions] = useState<VoteOption[]>([]);
   const [currentVote, setCurrentVote] = useState<String>("");
   const [randomizedOptions, setRandomOptions] = useState<VoteOption[]>([]);
   const [votes, setVotes] = useState<VoteResult[]>([]);
@@ -93,15 +95,27 @@ function Voting() {
         signer
       );
       try {
-        const results = await contract.tallyVotes();
+        const raw_results = await contract.tallyVotes();
+
         let voteResult = pubKey.encrypt(BigInt(0));
-        for (let i = 1; i < results.length; i++) {
-          voteResult = pubKey.addition(voteResult, BigInt(results[i]));
-          console.log(pubKey.addition(voteResult, BigInt(results[i])));
+        for (let i = 1; i < raw_results.length; i++) {
+          voteResult = pubKey.addition(voteResult, BigInt(raw_results[i]));
         }
-        const decryptedResult = privKey.decrypt(voteResult);
+        let decryptedResult = privKey.decrypt(voteResult).toString();
+
+        while (decryptedResult.length < maxVotes * randomizedOptions.length)
+          decryptedResult = "0" + decryptedResult;
         console.log(decryptedResult);
-        //setVotes(data);
+        const decodedResult = decryptedResult
+          .toString()
+          .match(/\d{1,9}/g)
+          ?.map((x) => +x.toString());
+        decodedResult?.reverse();
+        const results = options.map(function (option, i) {
+          return new VoteResult(option, decodedResult![i]);
+        });
+
+        setVotes(results);
       } catch (err: unknown) {
         handleRevert(err);
       }
@@ -128,7 +142,8 @@ function Voting() {
         signer
       );
       try {
-        const voteAsInt = BigInt(Math.pow(10, vote.power));
+        const voteAsInt = BigInt(10) ** (BigInt(9) * BigInt(vote.power));
+        console.log(voteAsInt);
         const encryptedVote = pubKey.encrypt(voteAsInt);
         console.log(encryptedVote);
         const transaction = await contract.recordVote(
@@ -156,6 +171,7 @@ function Voting() {
       );
       try {
         const options = await contract.getOptions();
+        setOptions(options);
         setRandomOptions(randomize(options));
       } catch (err) {
         console.log("Error: ", err);
