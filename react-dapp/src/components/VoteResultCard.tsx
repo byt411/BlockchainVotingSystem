@@ -4,23 +4,13 @@ import Typography from "@mui/material/Typography";
 import CardContent from "@mui/material/CardContent";
 import { Button, CardActions } from "@mui/material";
 import SimpleButton from "./SimpleButton";
-import VoteOption from "../types/VoteOption";
+import VoteResult from "../types/VoteResult";
 import DoneIcon from "@mui/icons-material/Done";
-interface VoteOptionProps {
-  acronym: string;
-  name: string;
-  onClick: (vote: VoteOption) => Promise<void>;
-  logourl: string;
-  disabled?: boolean;
+interface VoteResultProps {
+  voteResult: VoteResult;
 }
 
-const VoteOptionCard: FC<VoteOptionProps> = ({
-  acronym,
-  name,
-  onClick,
-  logourl,
-  disabled = false,
-}) => {
+const VoteResultCard: FC<VoteResultProps> = ({ voteResult }) => {
   return (
     <Card
       sx={{ minWidth: 400, minHeight: 260 }}
@@ -32,25 +22,25 @@ const VoteOptionCard: FC<VoteOptionProps> = ({
       }}
     >
       <CardContent>
-        <img src={logourl} width="80px" height="80px" alt={name} />
+        <img
+          src={voteResult.option.logourl}
+          width="80px"
+          height="80px"
+          alt={voteResult.option.name}
+        />
         <Typography variant="h5" component="div" color="white">
-          {name}
+          {voteResult.option.name}
         </Typography>
         <Typography sx={{ mb: 1.5 }} color="white">
-          {acronym}
+          {voteResult.option.acronym}
+        </Typography>
+        <Typography sx={{ mb: 2.5 }} color="white">
+          Votes: {voteResult.count}
         </Typography>
       </CardContent>
-      <CardActions style={{ justifyContent: "center" }}>
-        {!disabled ? (
-          <SimpleButton onClick={onClick!}>Vote</SimpleButton>
-        ) : (
-          <Button variant="outlined">
-            <DoneIcon />
-          </Button>
-        )}
-      </CardActions>
+      <CardActions style={{ justifyContent: "center" }}></CardActions>
     </Card>
   );
 };
 
-export default VoteOptionCard;
+export default VoteResultCard;
