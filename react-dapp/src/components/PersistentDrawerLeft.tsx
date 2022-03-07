@@ -19,6 +19,7 @@ import MailIcon from "@mui/icons-material/Mail";
 import { useNavigate } from "react-router-dom";
 import { ListItemButton } from "@mui/material";
 import { Link } from "react-router-dom";
+import { FC } from "react";
 const drawerWidth = 200;
 
 interface AppBarProps extends MuiAppBarProps {
@@ -49,8 +50,11 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   ...theme.mixins.toolbar,
   justifyContent: "flex-end",
 }));
+interface PersistentDrawerProps {
+  showCreator?: boolean;
+}
 
-export default function PersistentDrawerLeft() {
+const PersistentDrawerLeft: FC<PersistentDrawerProps> = ({ showCreator }) => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
@@ -119,6 +123,14 @@ export default function PersistentDrawerLeft() {
             </ListItemIcon>
             <ListItemText primary="Results"></ListItemText>
           </ListItemButton>
+          {showCreator && (
+            <ListItemButton component={Link} to="/publishresults">
+              <ListItemIcon>
+                <InboxIcon />
+              </ListItemIcon>
+              <ListItemText primary="Upload Results"></ListItemText>
+            </ListItemButton>
+          )}
         </List>
         <Divider />
         <List>
@@ -134,4 +146,6 @@ export default function PersistentDrawerLeft() {
       </Drawer>
     </Box>
   );
-}
+};
+
+export default PersistentDrawerLeft;

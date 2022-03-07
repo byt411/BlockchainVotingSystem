@@ -1,5 +1,5 @@
 import * as paillierBigint from "paillier-bigint";
-export const electionAddress = "0x68A8A77Cc4B167A8f328CD6415ff09280A94C459";
+export const electionAddress = "0xb05B7a715B03A85718B346F583Fb0D5080D84b54";
 export const pubKey = new paillierBigint.PublicKey(
   BigInt(
     "23887010820738940184376978775095137097407075755820241849675667344549655040826893898651499174154305754407685907017166822246885335055988915217054904210996835969645724149669253130435058417145607207943175901764713928131407873743249832381758479458745795300753271834595741442143133427988627165702813027003607579954439231340603435941053484359383805495562303162716634779567233298478083227766633641978636417664321938974764772327358877579601671564707952644543376217346716374851740059803819350790007564414568677497844187360531465492798178734397634076077444668757697506675393707023062527238109389708654148401762219555160774548261"
@@ -18,3 +18,33 @@ export const privKey = new paillierBigint.PrivateKey(
   pubKey
 );
 export const maxVotes = 9;
+export function tallyVotes(votes: string[]) {
+  let voteResult = BigInt(votes[0]);
+
+  for (let i = 1; i < votes.length; i++) {
+    voteResult = pubKey.addition(voteResult, BigInt(votes[i]));
+  }
+  console.log(voteResult);
+  return voteResult;
+}
+
+export function decryptTotal(
+  privKey: paillierBigint.PrivateKey,
+  encryptedTotal: bigint,
+  numOptions: number
+) {
+  let decryptedResult = privKey.decrypt(encryptedTotal).toString();
+  while (decryptedResult.length < maxVotes * numOptions)
+    decryptedResult = "0" + decryptedResult;
+  console.log(decryptedResult);
+  return decryptedResult;
+}
+
+export function decodeResult(encodedResult: string) {
+  const decodedResult = encodedResult
+    .toString()
+    .match(/\d{1,9}/g)
+    ?.map((x) => +x.toString());
+  decodedResult?.reverse();
+  return decodedResult;
+}

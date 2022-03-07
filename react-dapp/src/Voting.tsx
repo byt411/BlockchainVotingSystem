@@ -16,6 +16,8 @@ function Voting() {
   const [currentVote, setCurrentVote] = useState<String>("");
   const [randomizedOptions, setRandomOptions] = useState<VoteOption[]>([]);
   const [votes, setVotes] = useState<VoteResult[]>([]);
+  const [creator, setCreator] = useState<string>("");
+  const [currentAddress, setCurrentAddress] = useState<string>("");
   // request access to the user's MetaMask account
   async function requestAccount() {
     const address = await window.ethereum.request({
@@ -46,55 +48,6 @@ function Voting() {
       try {
         const data = await contract.getCurrentVote(address[0]);
         setCurrentVote(data);
-      } catch (err: unknown) {
-        handleRevert(err);
-      }
-    }
-  }
-  const emails = ["username@gmail.com", "user02@gmail.com"];
-  const [open, setOpen] = React.useState(false);
-  const [selectedValue, setSelectedValue] = React.useState(emails[1]);
-
-  const handleClickOpen = () => {
-    getVoteCounts();
-    setOpen(true);
-  };
-
-  const handleClose = (value: string) => {
-    setOpen(false);
-    setSelectedValue(value);
-  };
-  async function getVoteCounts() {
-    if (typeof window.ethereum !== "undefined") {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
-      const contract = new ethers.Contract(
-        electionAddress,
-        Election.abi,
-        signer
-      );
-      try {
-        const raw_results = await contract.tallyVotes();
-
-        let voteResult = pubKey.encrypt(BigInt(0));
-        for (let i = 1; i < raw_results.length; i++) {
-          voteResult = pubKey.addition(voteResult, BigInt(raw_results[i]));
-        }
-        let decryptedResult = privKey.decrypt(voteResult).toString();
-
-        while (decryptedResult.length < maxVotes * randomizedOptions.length)
-          decryptedResult = "0" + decryptedResult;
-        console.log(decryptedResult);
-        const decodedResult = decryptedResult
-          .toString()
-          .match(/\d{1,9}/g)
-          ?.map((x) => +x.toString());
-        decodedResult?.reverse();
-        const results = options.map(function (option, i) {
-          return new VoteResult(option, decodedResult![i]);
-        });
-
-        setVotes(results);
       } catch (err: unknown) {
         handleRevert(err);
       }
@@ -150,6 +103,10 @@ function Voting() {
       );
       try {
         const options = await contract.getOptions();
+        const address = await requestAccount();
+        const creator = await contract.getCreator();
+        setCurrentAddress(address);
+        setCreator(creator);
         setOptions(options);
         setRandomOptions(randomize(options));
       } catch (err) {
@@ -159,10 +116,6 @@ function Voting() {
   }
 
   useEffect(() => {
-    getCurrentVote();
-  }, [currentVote]);
-
-  useEffect(() => {
     getOptions();
   }, []);
   return (
@@ -170,7 +123,9 @@ function Voting() {
       <div className="App">
         <header className="App-header">
           <div>
-            <PersistentDrawerLeft />
+            <PersistentDrawerLeft
+              showCreator={currentAddress == creator.toLowerCase()}
+            />
           </div>
           <br />
           <br />

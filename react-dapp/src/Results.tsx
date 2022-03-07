@@ -22,36 +22,15 @@ function Results() {
   }
 
   async function getVoteCounts() {
-    const options: VoteOption[] = await getOptions();
     if (typeof window.ethereum !== "undefined") {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
       const contract = new ethers.Contract(
         electionAddress,
         Election.abi,
-        signer
+        provider
       );
       try {
-        const raw_results = await contract.tallyVotes();
-
-        let voteResult = BigInt(raw_results[0]);
-        console.log(raw_results.length);
-        for (let i = 1; i < raw_results.length; i++) {
-          voteResult = pubKey.addition(voteResult, BigInt(raw_results[i]));
-        }
-        let decryptedResult = privKey.decrypt(voteResult).toString();
-
-        while (decryptedResult.length < maxVotes * options.length)
-          decryptedResult = "0" + decryptedResult;
-        console.log(decryptedResult);
-        const decodedResult = decryptedResult
-          .toString()
-          .match(/\d{1,9}/g)
-          ?.map((x) => +x.toString());
-        decodedResult?.reverse();
-        const results = options.map(function (option, i) {
-          return new VoteResult(option, decodedResult![i]);
-        });
+        const results = await contract.getVoteCounts();
 
         setVotes(results);
         //console.log(results);
@@ -68,9 +47,12 @@ function Results() {
       alert(message.replace("execution reverted: ", ""));
     }
   }
+  const [creator, setCreator] = useState<string>("");
+  const [currentAddress, setCurrentAddress] = useState<string>("");
   async function getOptions() {
     if (typeof window.ethereum !== "undefined") {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
+      console.log(provider);
       const contract = new ethers.Contract(
         electionAddress,
         Election.abi,
@@ -78,6 +60,10 @@ function Results() {
       );
       try {
         const options = await contract.getOptions();
+        const address = await requestAccount();
+        const creator = await contract.getCreator();
+        setCurrentAddress(address);
+        setCreator(creator);
         return options;
       } catch (err) {
         console.log("Error: ", err);
@@ -94,7 +80,9 @@ function Results() {
       <div className="App">
         <header className="App-header">
           <div>
-            <PersistentDrawerLeft />
+            <PersistentDrawerLeft
+              showCreator={currentAddress == creator.toLowerCase()}
+            />
           </div>
           <br />
           <br />
