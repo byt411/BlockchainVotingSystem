@@ -4,8 +4,7 @@ import React, { useEffect, useState } from "react";
 import Election from "./artifacts/contracts/Election.sol/Election.json";
 import PersistentDrawerLeft from "./components/PersistentDrawerLeft";
 import VoteResultCard from "./components/VoteResultCard";
-import { electionAddress, maxVotes, privKey, pubKey } from "./Election";
-import VoteOption from "./types/VoteOption";
+import { electionAddress, handleRevert } from "./Election";
 import VoteResult from "./types/VoteResult";
 import "./Voting.css";
 declare let window: any;
@@ -37,14 +36,6 @@ function Results() {
       } catch (err: unknown) {
         handleRevert(err);
       }
-    }
-  }
-
-  function handleRevert(err: unknown) {
-    if (err instanceof Error) {
-      console.log(err.message);
-      const message = err.message.match(/"message":"(.*?)"/)![0].slice(11, -1);
-      alert(message.replace("execution reverted: ", ""));
     }
   }
   const [creator, setCreator] = useState<string>("");

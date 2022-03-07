@@ -1,23 +1,22 @@
-import { Grid, Typography } from "@mui/material";
+import { Grid } from "@mui/material";
 import { ethers } from "ethers";
+import * as paillierBigint from "paillier-bigint";
 import React, { useEffect, useState } from "react";
 import Election from "./artifacts/contracts/Election.sol/Election.json";
 import PersistentDrawerLeft from "./components/PersistentDrawerLeft";
+import SimpleButton from "./components/SimpleButton";
+import SimpleInput from "./components/SimpleInput";
 import VoteResultCard from "./components/VoteResultCard";
-import * as paillierBigint from "paillier-bigint";
 import {
+  decodeResult,
+  decryptTotal,
   electionAddress,
-  maxVotes,
   pubKey,
   tallyVotes,
-  decryptTotal,
-  decodeResult,
 } from "./Election";
 import VoteOption from "./types/VoteOption";
 import VoteResult from "./types/VoteResult";
 import "./Voting.css";
-import SimpleInput from "./components/SimpleInput";
-import SimpleButton from "./components/SimpleButton";
 declare let window: any;
 
 function PublishResults() {

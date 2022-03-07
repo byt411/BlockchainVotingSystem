@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import Election from "./artifacts/contracts/Election.sol/Election.json";
 import PersistentDrawerLeft from "./components/PersistentDrawerLeft";
 import VoteOptionCard from "./components/VoteOptionCard";
-import { electionAddress, maxVotes, privKey, pubKey } from "./Election";
+import { electionAddress, pubKey, handleRevert } from "./Election";
 import VoteOption from "./types/VoteOption";
 import VoteResult from "./types/VoteResult";
 import "./Voting.css";
@@ -51,14 +51,6 @@ function Voting() {
       } catch (err: unknown) {
         handleRevert(err);
       }
-    }
-  }
-
-  function handleRevert(err: unknown) {
-    if (err instanceof Error) {
-      console.log(err.message);
-      const message = err.message.match(/"message":"(.*?)"/)![0].slice(11, -1);
-      alert(message.replace("execution reverted: ", ""));
     }
   }
 

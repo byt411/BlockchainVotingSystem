@@ -1,11 +1,9 @@
-import React, { FC } from "react";
+import { CardActions } from "@mui/material";
 import Card from "@mui/material/Card";
-import Typography from "@mui/material/Typography";
 import CardContent from "@mui/material/CardContent";
-import { Button, CardActions } from "@mui/material";
-import SimpleButton from "./SimpleButton";
+import Typography from "@mui/material/Typography";
+import React, { FC } from "react";
 import VoteResult from "../types/VoteResult";
-import DoneIcon from "@mui/icons-material/Done";
 interface VoteResultProps {
   voteResult: VoteResult;
 }
