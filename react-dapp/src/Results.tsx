@@ -1,16 +1,13 @@
-import "./Voting.css";
-import React, { useEffect } from "react";
-import { useState } from "react";
+import { Grid } from "@mui/material";
 import { ethers } from "ethers";
+import React, { useEffect, useState } from "react";
 import Election from "./artifacts/contracts/Election.sol/Election.json";
-import * as paillierBigint from "paillier-bigint";
 import PersistentDrawerLeft from "./components/PersistentDrawerLeft";
-import VoteOption from "./types/VoteOption";
-import { Button, Grid } from "@mui/material";
-import SimpleDialog from "./components/SimpleDialog";
-import VoteResult from "./types/VoteResult";
 import VoteResultCard from "./components/VoteResultCard";
-import { electionAddress, pubKey, privKey, maxVotes } from "./Election";
+import { electionAddress, maxVotes, privKey, pubKey } from "./Election";
+import VoteOption from "./types/VoteOption";
+import VoteResult from "./types/VoteResult";
+import "./Voting.css";
 declare let window: any;
 
 function Results() {

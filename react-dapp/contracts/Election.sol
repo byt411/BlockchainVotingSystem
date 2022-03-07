@@ -61,22 +61,11 @@ contract Election {
         return options;
     }
 
-    function getCurrentVote(address user) public view returns (string memory) {
-        if (bytes(votes[voteMap[msg.sender]]).length == 0) {
-            return "";
-        } else {
-            return votes[voteMap[user]];
-        }
-    }
-
     function getEndTime() public view returns (uint256) {
         return endtime;
     }
 
     function tallyVotes() public view returns (string[] memory) {
-        // for (uint256 i = 1; i < votes.length; i++) {
-        // results[optionMap[votes[i]]].count += 1;
-        // }
         return votes;
     }
 
@@ -87,8 +76,7 @@ contract Election {
 
     function recordVote(string memory _vote) public {
         // require(block.timestamp < endtime, "Election has closed.");
-        // the condition is not zero so it is overwriting
-        if (bytes(votes[voteMap[msg.sender]]).length == 0) {
+        if (voteMap[msg.sender] == 0) {
             votes.push(_vote);
             voteMap[msg.sender] = votes.length - 1;
         } else {

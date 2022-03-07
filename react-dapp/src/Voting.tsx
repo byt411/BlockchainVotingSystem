@@ -1,17 +1,14 @@
-import "./Voting.css";
-import React, { useEffect } from "react";
-import { useState } from "react";
+import { Grid } from "@mui/material";
 import { ethers } from "ethers";
+import React, { useEffect, useState } from "react";
 import Election from "./artifacts/contracts/Election.sol/Election.json";
-import * as paillierBigint from "paillier-bigint";
 import PersistentDrawerLeft from "./components/PersistentDrawerLeft";
-import VoteOption from "./types/VoteOption";
 import VoteOptionCard from "./components/VoteOptionCard";
-import { Button, Grid } from "@mui/material";
-import SimpleDialog from "./components/SimpleDialog";
+import { electionAddress, maxVotes, privKey, pubKey } from "./Election";
+import VoteOption from "./types/VoteOption";
 import VoteResult from "./types/VoteResult";
+import "./Voting.css";
 
-import { electionAddress, pubKey, privKey, maxVotes } from "./Election";
 declare let window: any;
 function Voting() {
   // store greeting in local state
