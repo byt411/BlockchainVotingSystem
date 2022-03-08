@@ -1,4 +1,4 @@
-import { Grid } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import { ethers } from "ethers";
 import * as paillierBigint from "paillier-bigint";
 import React, { useEffect, useState } from "react";
@@ -24,7 +24,8 @@ function PublishResults() {
   const [encryptedTotal, setEncryptedTotal] = useState<string>("");
   const [encodedTotal, setEncodedTotal] = useState<string>("");
   const [decodedTotal, setDecodedTotal] = useState<string>("");
-  const [options, setOptions] = useState<VoteOption[]>([]);
+  const [encryptedZero, setEncryptedZero] = useState<string>("");
+  const [negativeTotal, setNegativeTotal] = useState<string>("");
   const [calculatedResults, setCalculatedResults] = useState<VoteResult[]>([]);
   const [lambda, setLambda] = useState<string>("");
   const [mu, setMu] = useState<string>("");
@@ -56,7 +57,6 @@ function PublishResults() {
       );
       try {
         const options = await contract.getOptions();
-        setOptions(options);
         return options;
       } catch (err) {
         console.log("Error: ", err);
@@ -80,6 +80,11 @@ function PublishResults() {
           gasLimit: 1000000,
         });
         await transaction.wait();
+        const transaction2 = await contract.publishVerification(encryptedTotal, encodedTotal, negativeTotal, "7703", encryptedZero, {
+          gasPrice: provider.getGasPrice(),
+          gasLimit: 1000000,
+        });
+        await transaction2.wait();
       } catch (err: unknown) {
         handleRevert(err);
       }
@@ -113,7 +118,8 @@ function PublishResults() {
     const raw_results = await getVotes();
     const encrypted_total = tallyVotes(raw_results);
 
-    setEncryptedTotal(encryptedTotal);
+    setEncryptedTotal(encrypted_total.toString());
+    console.log(encryptedTotal);
     const encoded_total = decryptTotal(
       privKey,
       encrypted_total,
@@ -127,9 +133,33 @@ function PublishResults() {
     });
     setCalculatedResults(results);
     console.log(results);
+    console.log(calculatedResults);
   }
 
-  useEffect(() => {}, [encodedTotal]);
+  function generateProofs() {
+    const privKey = new paillierBigint.PrivateKey(
+      BigInt(lambda),
+      BigInt(mu),
+      pubKey
+    );
+    const negativeTotal = BigInt(encodedTotal) * BigInt(-1);
+    const enc_negativeTotal = pubKey.encrypt(negativeTotal, BigInt(7703))
+    const enc_zero = pubKey.addition(BigInt(encryptedTotal), enc_negativeTotal);
+    setNegativeTotal(enc_negativeTotal.toString());
+    setEncryptedZero(enc_zero.toString());
+    console.log(privKey.decrypt(enc_zero))
+  }
+
+  useEffect(() => {
+    async function initialLoad() {
+      const options: VoteOption[] = await getOptions();
+      const results = options.map(function (option, i) {
+        return new VoteResult(option, 0);
+      });
+      setCalculatedResults(results);
+    }
+    initialLoad();
+  }, []);
 
   return (
     <>
@@ -142,14 +172,36 @@ function PublishResults() {
           <br />
 
           <Grid container spacing={3} alignItems="flex-start">
-            <Grid container item spacing={3} xs={6} alignItems="flex-start">
+            <Grid container item spacing={3} xs={4} alignItems="flex-start">
               {calculatedResults.map((x, y) => (
                 <Grid item key={y} xs={12}>
                   <VoteResultCard voteResult={x}></VoteResultCard>
                 </Grid>
               ))}
             </Grid>
-            <Grid container item spacing={3} xs={6} alignItems="flex-start">
+            <Grid container item spacing={3} xs={4} alignItems="flex-start">
+              <Grid item xs={12}>
+                <Typography color="white" style={{ wordWrap: "break-word" }}>
+                  Encrypted Total: {encryptedTotal}
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+              <Typography color="white" style={{ wordWrap: "break-word" }}>
+                  Encoded Total: {encodedTotal}
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <Typography color="white" style={{ wordWrap: "break-word" }}>
+                  Encrypted Negative Total: {negativeTotal}
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <Typography color="white" style={{ wordWrap: "break-word" }}>
+                  Encrypted Zero: {encryptedZero}
+                </Typography>
+              </Grid>
+            </Grid>
+            <Grid container item spacing={3} xs={4} alignItems="flex-start">
               <Grid item xs={12}>
                 <SimpleInput
                   setState={setLambda}
@@ -169,13 +221,16 @@ function PublishResults() {
                   Process Votes
                 </SimpleButton>
               </Grid>
-              {calculatedResults && (
                 <Grid item xs={12}>
-                  <SimpleButton onClick={publishVoteCounts}>
-                    Publish Vote Counts
+                  <SimpleButton onClick={generateProofs}>
+                    Generate Proofs
                   </SimpleButton>
                 </Grid>
-              )}
+                <Grid item xs={12}>
+                  <SimpleButton onClick={publishVoteCounts}>
+                    Publish Vote Counts & Proofs
+                  </SimpleButton>
+                </Grid>
             </Grid>
           </Grid>
         </header>

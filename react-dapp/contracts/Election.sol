@@ -4,6 +4,13 @@ pragma solidity ^0.8.12;
 contract Election {
     address creator;
     uint256 endtime;
+
+    string encryptedTotal;
+    string encodedTotal;
+    string encryptedNegativeTotal;
+    string randomPrime;
+    string encryptedZero;
+
     struct VoteOption {
         string name;
         string acronym;
@@ -80,6 +87,45 @@ contract Election {
         for (uint256 i = 0; i < results.length; i++) {
             results[i].count = submittedResults[i].count;
         }
+    }
+
+    function publishVerification(
+        string memory calcEncryptedTotal,
+        string memory calcEncodedTotal,
+        string memory calcEncryptedNegativeTotal,
+        string memory calcRandomPrime,
+        string memory calcEncryptedZero
+    ) public {
+        require(
+            msg.sender == creator,
+            "You are not authorized to perform this action."
+        );
+        require(block.timestamp > endtime, "Election is still in progress.");
+        encryptedTotal = calcEncryptedTotal;
+        encodedTotal = calcEncodedTotal;
+        encryptedNegativeTotal = calcEncryptedNegativeTotal;
+        randomPrime = calcRandomPrime;
+        encryptedZero = calcEncryptedZero;
+    }
+
+    function getVerification()
+        public
+        view
+        returns (
+            string memory,
+            string memory,
+            string memory,
+            string memory,
+            string memory
+        )
+    {
+        return (
+            encryptedTotal,
+            encodedTotal,
+            encryptedNegativeTotal,
+            randomPrime,
+            encryptedZero
+        );
     }
 
     function getVotes() public view returns (string[] memory) {
