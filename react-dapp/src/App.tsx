@@ -1,8 +1,9 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import Results from "./Results";
-import Voting from "./Voting";
-import PublishResults from "./PublishResults";
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+
+import PublishResults from './pages/PublishResults';
+import Results from './pages/Results';
+import Voting from './pages/Voting';
 
 export default function App() {
   return (

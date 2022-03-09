@@ -132,7 +132,7 @@ contract Election {
         return votes;
     }
 
-    function getVoteCounts() public view returns (VoteResult[4] memory) {
+    function getResults() public view returns (VoteResult[4] memory) {
         return results;
     }
 
