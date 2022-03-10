@@ -1,9 +1,10 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
-import PublishResults from './pages/PublishResults';
-import Results from './pages/Results';
-import Voting from './pages/Voting';
+import PublishResults from "./pages/PublishResults";
+import Results from "./pages/Results";
+import Voting from "./pages/Voting";
+import Verification from "./pages/Verification";
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
           <Route path="/" element={<Voting />}></Route>
           <Route path="/results" element={<Results />}></Route>
           <Route path="/publishresults" element={<PublishResults />}></Route>
+          <Route path="/verification" element={<Verification />}></Route>
         </Routes>
       </div>
     </Router>

@@ -8,17 +8,19 @@ import PersistentDrawerLeft from "../components/PersistentDrawerLeft";
 import SimpleButton from "../components/SimpleButton";
 import SimpleInput from "../components/SimpleInput";
 import VoteResultCard from "../components/VoteResultCard";
-import { pubKey } from "../Election";
+import { pubKey, privKey } from "../Election";
 import { getCreator, getOptions, requestAccount } from "../functions/Common";
 import {
   decodeResult,
   decryptTotal,
   getVotes,
-  publishResultsAndProof,
+  publishResults,
+  publishProofs,
   tallyVotes,
 } from "../functions/PublishResults";
 import VoteOption from "../types/VoteOption";
 import VoteResult from "../types/VoteResult";
+import { getVerification } from "../functions/Verification";
 
 declare let window: any;
 
@@ -26,22 +28,32 @@ function PublishResults() {
   // store greeting in local state-p
   const [encryptedTotal, setEncryptedTotal] = useState<string>("");
   const [encodedTotal, setEncodedTotal] = useState<string>("");
-  const [encryptedZero, setEncryptedZero] = useState<string>("");
-  const [negativeTotal, setNegativeTotal] = useState<string>("");
+  const [verificationChallenge, setVerificationChallenge] = useState<bigint>(
+    BigInt(0)
+  );
+  const [u, setU] = useState<string>("");
+  const [a, setA] = useState<string>("");
+  const [z, setZ] = useState<string>("");
+  const [e, setE] = useState<string>("");
+  const [negativeR, setnegativeR] = useState<string>("");
   const [calculatedResults, setCalculatedResults] = useState<VoteResult[]>([]);
   const [lambda, setLambda] = useState<string>("");
   const [mu, setMu] = useState<string>("");
+  const [p, setP] = useState<string>("");
+  const [q, setQ] = useState<string>("");
 
   const [creator, setCreator] = useState<string>("");
   const [currentAddress, setCurrentAddress] = useState<string>("");
 
   async function processVotes() {
     const options: VoteOption[] = await getOptions();
-    const privKey = new paillierBigint.PrivateKey(
+    /*  const privKey = new paillierBigint.PrivateKey(
       BigInt(lambda),
       BigInt(mu),
-      pubKey
-    );
+      pubKey,
+      BigInt(p),
+      BigInt(q)
+    ); */
     const raw_results = await getVotes();
     const encrypted_total = tallyVotes(raw_results);
 
@@ -57,20 +69,37 @@ function PublishResults() {
       return new VoteResult(option, decoded_results![i]);
     });
     setCalculatedResults(results);
+    console.log(calculatedResults);
   }
 
-  function generateProofs() {
-    const privKey = new paillierBigint.PrivateKey(
+  async function generateProofs() {
+    /* const privKey = new paillierBigint.PrivateKey(
       BigInt(lambda),
       BigInt(mu),
-      pubKey
-    );
+      pubKey,
+      BigInt(p),
+      BigInt(q)
+    ); */
+    const [a, b, r_u, r_a, r_z, r_e, r_r] = await getVerification();
+    const calcA = pubKey.encrypt(BigInt(0));
+    const r = privKey.getRandomFactor(calcA);
+    const calcE = BigInt(r_e);
+
     const negativeTotal = BigInt(encodedTotal) * BigInt(-1);
-    const enc_negativeTotal = pubKey.encrypt(negativeTotal, BigInt(7703));
+    const enc_negativeTotal = pubKey.encrypt(negativeTotal);
+    const negativeR = privKey.getRandomFactor(enc_negativeTotal);
     const enc_zero = pubKey.addition(BigInt(encryptedTotal), enc_negativeTotal);
-    setNegativeTotal(enc_negativeTotal.toString());
-    setEncryptedZero(enc_zero.toString());
-    console.log(privKey.decrypt(enc_zero));
+    const calcU = enc_zero;
+    const calcV = privKey.getRandomFactor(calcU);
+
+    const calcZ = (r * calcV ** calcE) % pubKey.n;
+    console.log(pubKey.encrypt(BigInt(0), calcZ));
+    console.log((calcA * calcU ** calcE) % pubKey._n2);
+    setU(calcU.toString());
+    setA(calcA.toString());
+    setZ(calcZ.toString());
+    setE(calcE.toString());
+    setnegativeR(negativeR.toString());
   }
 
   useEffect(() => {
@@ -119,12 +148,27 @@ function PublishResults() {
               </Grid>
               <Grid item xs={12}>
                 <Typography color="white" style={{ wordWrap: "break-word" }}>
-                  Encrypted Negative Total: {negativeTotal}
+                  u: {u}
                 </Typography>
               </Grid>
               <Grid item xs={12}>
                 <Typography color="white" style={{ wordWrap: "break-word" }}>
-                  Encrypted Zero: {encryptedZero}
+                  a: {a}
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <Typography color="white" style={{ wordWrap: "break-word" }}>
+                  z: {z}
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <Typography color="white" style={{ wordWrap: "break-word" }}>
+                  e: {e}
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <Typography color="white" style={{ wordWrap: "break-word" }}>
+                  Negative r: {negativeR}
                 </Typography>
               </Grid>
             </Grid>
@@ -144,6 +188,12 @@ function PublishResults() {
                 ></SimpleInput>
               </Grid>
               <Grid item xs={12}>
+                <SimpleInput setState={setP} state={p} label="P:"></SimpleInput>
+              </Grid>
+              <Grid item xs={12}>
+                <SimpleInput setState={setQ} state={q} label="Q:"></SimpleInput>
+              </Grid>
+              <Grid item xs={12}>
                 <SimpleButton onClick={processVotes}>
                   Process Votes
                 </SimpleButton>
@@ -154,14 +204,20 @@ function PublishResults() {
                 </SimpleButton>
               </Grid>
               <Grid item xs={12}>
+                <SimpleButton onClick={() => publishResults(calculatedResults)}>
+                  Publish Vote Counts & Proofs
+                </SimpleButton>
+              </Grid>
+              <Grid item xs={12}>
                 <SimpleButton
                   onClick={() =>
-                    publishResultsAndProof(
-                      calculatedResults,
+                    publishProofs(
                       encryptedTotal,
                       encodedTotal,
-                      negativeTotal,
-                      encryptedZero
+                      u,
+                      a,
+                      z,
+                      negativeR
                     )
                   }
                 >

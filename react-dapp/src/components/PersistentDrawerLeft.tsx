@@ -122,6 +122,12 @@ const PersistentDrawerLeft: FC<PersistentDrawerProps> = ({ showCreator }) => {
             </ListItemIcon>
             <ListItemText primary="Results"></ListItemText>
           </ListItemButton>
+          <ListItemButton component={Link} to="/verification">
+            <ListItemIcon>
+              <InboxIcon />
+            </ListItemIcon>
+            <ListItemText primary="Verification"></ListItemText>
+          </ListItemButton>
           {showCreator && (
             <ListItemButton component={Link} to="/publishresults">
               <ListItemIcon>

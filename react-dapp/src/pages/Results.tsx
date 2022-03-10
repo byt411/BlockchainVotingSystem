@@ -29,6 +29,7 @@ function Results() {
       setCurrentAddress(address[0]);
     }
     loadResultsCreatorCurrentAddress();
+    console.log(results);
   }, [currentAddress]);
 
   return (

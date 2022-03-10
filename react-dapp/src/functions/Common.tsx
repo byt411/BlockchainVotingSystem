@@ -15,7 +15,6 @@ export async function requestAccount() {
 export async function getOptions() {
   if (typeof window.ethereum !== "undefined") {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
-    console.log(provider);
     const contract = new ethers.Contract(
       electionAddress,
       Election.abi,

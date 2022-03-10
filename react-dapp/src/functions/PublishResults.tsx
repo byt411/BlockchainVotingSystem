@@ -13,7 +13,6 @@ export function tallyVotes(votes: string[]) {
   for (let i = 1; i < votes.length; i++) {
     voteResult = pubKey.addition(voteResult, BigInt(votes[i]));
   }
-  console.log(voteResult);
   return voteResult;
 }
 
@@ -38,13 +37,7 @@ export function decodeResult(encodedResult: string) {
   return decodedResult;
 }
 
-export async function publishResultsAndProof(
-  calculatedResults: VoteResult[],
-  encryptedTotal: string,
-  encodedTotal: string,
-  negativeTotal: string,
-  encryptedZero: string
-) {
+export async function publishResults(calculatedResults: VoteResult[]) {
   if (typeof window.ethereum !== "undefined") {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
@@ -55,18 +48,38 @@ export async function publishResultsAndProof(
         gasLimit: 1000000,
       });
       await transaction.wait();
-      const transaction2 = await contract.publishVerification(
+    } catch (err: unknown) {
+      handleRevert(err);
+    }
+  }
+}
+
+export async function publishProofs(
+  encryptedTotal: string,
+  encodedTotal: string,
+  u: string,
+  a: string,
+  z: string,
+  r: string
+) {
+  if (typeof window.ethereum !== "undefined") {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    const contract = new ethers.Contract(electionAddress, Election.abi, signer);
+    try {
+      const transaction = await contract.publishVerification(
         encryptedTotal,
         encodedTotal,
-        negativeTotal,
-        "7703",
-        encryptedZero,
+        u,
+        a,
+        z,
+        r,
         {
           gasPrice: provider.getGasPrice(),
-          gasLimit: 1000000,
+          gasLimit: 4000000,
         }
       );
-      await transaction2.wait();
+      await transaction.wait();
     } catch (err: unknown) {
       handleRevert(err);
     }
@@ -76,7 +89,6 @@ export async function publishResultsAndProof(
 export async function getVotes() {
   if (typeof window.ethereum !== "undefined") {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
-    console.log(provider);
     const contract = new ethers.Contract(
       electionAddress,
       Election.abi,
