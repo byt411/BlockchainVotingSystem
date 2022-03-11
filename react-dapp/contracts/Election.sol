@@ -4,7 +4,8 @@ pragma solidity ^0.8.12;
 contract Election {
     address creator;
     uint256 endtime;
-
+    bool resultsPublished;
+    bool proofPublished;
     string encryptedTotal;
     string encodedTotal;
 
@@ -12,7 +13,7 @@ contract Election {
     string a;
     string z;
     string e;
-    string r;
+    string negativeR;
 
     struct VoteOption {
         string name;
@@ -68,6 +69,8 @@ contract Election {
         endtime = block.timestamp + 180;
         creator = msg.sender;
         e = "1234";
+        proofPublished = false;
+        resultsPublished = false;
     }
 
     function getOptions() public view returns (VoteOption[4] memory) {
@@ -87,10 +90,15 @@ contract Election {
             msg.sender == creator,
             "You are not authorized to perform this action."
         );
-        require(block.timestamp > endtime, "Election is still in progress.");
+        require(
+            proofPublished,
+            "The verification proof has not yet been published."
+        );
+        require(!resultsPublished, "The results have already been published.");
         for (uint256 i = 0; i < results.length; i++) {
             results[i].count = submittedResults[i].count;
         }
+        resultsPublished = true;
     }
 
     function publishVerification(
@@ -99,19 +107,24 @@ contract Election {
         string memory calcU,
         string memory calcA,
         string memory calcZ,
-        string memory calcR
+        string memory calcNegativeR
     ) public {
         require(
             msg.sender == creator,
             "You are not authorized to perform this action."
         );
         require(block.timestamp > endtime, "Election is still in progress.");
+        require(
+            !proofPublished,
+            "The verification proof has already been published."
+        );
         encryptedTotal = calcEncryptedTotal;
         encodedTotal = calcEncodedTotal;
         u = calcU;
         a = calcA;
         z = calcZ;
-        r = calcR;
+        negativeR = calcNegativeR;
+        proofPublished = true;
     }
 
     function getVerification()
@@ -127,7 +140,7 @@ contract Election {
             string memory
         )
     {
-        return (encryptedTotal, encodedTotal, u, a, z, e, r);
+        return (encryptedTotal, encodedTotal, u, a, z, e, negativeR);
     }
 
     function getE() public view returns (string memory) {
@@ -142,8 +155,16 @@ contract Election {
         return results;
     }
 
+    function getProofPublished() public view returns (bool) {
+        return proofPublished;
+    }
+
+    function getResultsPublished() public view returns (bool) {
+        return resultsPublished;
+    }
+
     function recordVote(string memory _vote) public {
-        // require(block.timestamp < endtime, "Election has closed.");
+        // require((block.timestamp < endtime) && !resultsPublished && !proofPublished, "Election has closed.");
         if (voteMap[msg.sender] == 0) {
             votes.push(_vote);
             voteMap[msg.sender] = votes.length - 1;

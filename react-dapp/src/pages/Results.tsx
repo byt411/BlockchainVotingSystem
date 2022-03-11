@@ -1,13 +1,14 @@
-import "./Voting.css";
+import './Voting.css';
 
-import { Grid } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { Grid } from '@mui/material';
+import React, { useEffect, useState } from 'react';
 
-import PersistentDrawerLeft from "../components/PersistentDrawerLeft";
-import VoteResultCard from "../components/VoteResultCard";
-import { getCreator, requestAccount } from "../functions/Common";
-import { getResults } from "../functions/Results";
-import VoteResult from "../types/VoteResult";
+import PersistentDrawerLeft from '../components/PersistentDrawerLeft';
+import SimpleDialog from '../components/SimpleDialog';
+import VoteResultCard from '../components/VoteResultCard';
+import { getCreator, getResultsPublished, requestAccount } from '../functions/Common';
+import { getResults } from '../functions/Results';
+import VoteResult from '../types/VoteResult';
 
 declare let window: any;
 
@@ -18,6 +19,7 @@ function Results() {
 
   const [creator, setCreator] = useState<string>("");
   const [currentAddress, setCurrentAddress] = useState<string>("");
+  const [resultsPublished, setResultsPublished] = useState<boolean>(true);
 
   useEffect(() => {
     async function loadResultsCreatorCurrentAddress() {
@@ -27,10 +29,11 @@ function Results() {
       setCreator(creator);
       const address = await requestAccount();
       setCurrentAddress(address[0]);
+      const resultsPub = await getResultsPublished();
+      setResultsPublished(resultsPub);
     }
     loadResultsCreatorCurrentAddress();
-    console.log(results);
-  }, [currentAddress]);
+  }, [currentAddress, results]);
 
   return (
     <>
@@ -43,6 +46,9 @@ function Results() {
           </div>
           <br />
           <br />
+          {!resultsPublished && (
+            <SimpleDialog message="Results have not yet been published."></SimpleDialog>
+          )}
           <Grid container spacing={2} columns={2}>
             {results.map((x, y) => (
               <Grid item key={y}>

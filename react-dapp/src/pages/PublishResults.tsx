@@ -1,26 +1,25 @@
-import "./Voting.css";
+import './Voting.css';
 
-import { Grid, Typography } from "@mui/material";
-import * as paillierBigint from "paillier-bigint";
-import React, { useEffect, useState } from "react";
+import { Grid, Typography } from '@mui/material';
+import React, { useEffect, useState } from 'react';
 
-import PersistentDrawerLeft from "../components/PersistentDrawerLeft";
-import SimpleButton from "../components/SimpleButton";
-import SimpleInput from "../components/SimpleInput";
-import VoteResultCard from "../components/VoteResultCard";
-import { pubKey, privKey } from "../Election";
-import { getCreator, getOptions, requestAccount } from "../functions/Common";
+import PersistentDrawerLeft from '../components/PersistentDrawerLeft';
+import SimpleButton from '../components/SimpleButton';
+import SimpleInput from '../components/SimpleInput';
+import VoteResultCard from '../components/VoteResultCard';
+import { privKey, pubKey } from '../Election';
+import { getCreator, getOptions, requestAccount } from '../functions/Common';
 import {
   decodeResult,
   decryptTotal,
+  getE,
   getVotes,
-  publishResults,
   publishProofs,
+  publishResults,
   tallyVotes,
-} from "../functions/PublishResults";
-import VoteOption from "../types/VoteOption";
-import VoteResult from "../types/VoteResult";
-import { getVerification } from "../functions/Verification";
+} from '../functions/PublishResults';
+import VoteOption from '../types/VoteOption';
+import VoteResult from '../types/VoteResult';
 
 declare let window: any;
 
@@ -28,9 +27,6 @@ function PublishResults() {
   // store greeting in local state-p
   const [encryptedTotal, setEncryptedTotal] = useState<string>("");
   const [encodedTotal, setEncodedTotal] = useState<string>("");
-  const [verificationChallenge, setVerificationChallenge] = useState<bigint>(
-    BigInt(0)
-  );
   const [u, setU] = useState<string>("");
   const [a, setA] = useState<string>("");
   const [z, setZ] = useState<string>("");
@@ -80,7 +76,7 @@ function PublishResults() {
       BigInt(p),
       BigInt(q)
     ); */
-    const [a, b, r_u, r_a, r_z, r_e, r_r] = await getVerification();
+    const r_e = await getE();
     const calcA = pubKey.encrypt(BigInt(0));
     const r = privKey.getRandomFactor(calcA);
     const calcE = BigInt(r_e);
@@ -204,11 +200,6 @@ function PublishResults() {
                 </SimpleButton>
               </Grid>
               <Grid item xs={12}>
-                <SimpleButton onClick={() => publishResults(calculatedResults)}>
-                  Publish Vote Counts & Proofs
-                </SimpleButton>
-              </Grid>
-              <Grid item xs={12}>
                 <SimpleButton
                   onClick={() =>
                     publishProofs(
@@ -221,7 +212,12 @@ function PublishResults() {
                     )
                   }
                 >
-                  Publish Vote Counts & Proofs
+                  Publish Proofs
+                </SimpleButton>
+              </Grid>
+              <Grid item xs={12}>
+                <SimpleButton onClick={() => publishResults(calculatedResults)}>
+                  Publish Vote Counts
                 </SimpleButton>
               </Grid>
             </Grid>

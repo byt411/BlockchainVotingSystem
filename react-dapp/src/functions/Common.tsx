@@ -1,8 +1,8 @@
-import { ethers } from "ethers";
+import { ethers } from 'ethers';
 
-import Election from "../artifacts/contracts/Election.sol/Election.json";
-import { electionAddress, pubKey } from "../Election";
-import VoteOption from "../types/VoteOption";
+import Election from '../artifacts/contracts/Election.sol/Election.json';
+import { electionAddress, pubKey } from '../Election';
+import VoteOption from '../types/VoteOption';
 
 declare let window: any;
 export async function requestAccount() {
@@ -23,6 +23,40 @@ export async function getOptions() {
     try {
       const options = await contract.getOptions();
       return options;
+    } catch (err) {
+      console.log("Error: ", err);
+    }
+  }
+}
+
+export async function getResultsPublished() {
+  if (typeof window.ethereum !== "undefined") {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const contract = new ethers.Contract(
+      electionAddress,
+      Election.abi,
+      provider
+    );
+    try {
+      const resultsPublished = await contract.getResultsPublished();
+      return resultsPublished;
+    } catch (err) {
+      console.log("Error: ", err);
+    }
+  }
+}
+
+export async function getProofPublished() {
+  if (typeof window.ethereum !== "undefined") {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const contract = new ethers.Contract(
+      electionAddress,
+      Election.abi,
+      provider
+    );
+    try {
+      const resultsPublished = await contract.getProofPublished();
+      return resultsPublished;
     } catch (err) {
       console.log("Error: ", err);
     }

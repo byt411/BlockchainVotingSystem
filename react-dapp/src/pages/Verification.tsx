@@ -1,25 +1,19 @@
-import "./Voting.css";
-import { Grid, Typography } from "@mui/material";
-import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
-import * as paillierBigint from "paillier-bigint";
-import React, { useEffect, useState } from "react";
-import DoneOutlinedIcon from "@mui/icons-material/DoneOutlined";
-import PersistentDrawerLeft from "../components/PersistentDrawerLeft";
-import SimpleButton from "../components/SimpleButton";
-import SimpleInput from "../components/SimpleInput";
-import VoteResultCard from "../components/VoteResultCard";
-import { pubKey, privKey } from "../Election";
-import { getCreator, getOptions, requestAccount } from "../functions/Common";
-import {
-  decodeResult,
-  decryptTotal,
-  getVotes,
-  tallyVotes,
-} from "../functions/PublishResults";
-import VoteOption from "../types/VoteOption";
-import VoteResult from "../types/VoteResult";
-import { getVerification } from "../functions/Verification";
-import { getResults } from "../functions/Results";
+import './Voting.css';
+
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
+import DoneOutlinedIcon from '@mui/icons-material/DoneOutlined';
+import { Grid, Typography } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+
+import PersistentDrawerLeft from '../components/PersistentDrawerLeft';
+import SimpleDialog from '../components/SimpleDialog';
+import { pubKey } from '../Election';
+import { getCreator, getOptions, getProofPublished, getResultsPublished, requestAccount } from '../functions/Common';
+import { decodeResult, getVotes, tallyVotes } from '../functions/PublishResults';
+import { getResults } from '../functions/Results';
+import { getVerification } from '../functions/Verification';
+import VoteOption from '../types/VoteOption';
+import VoteResult from '../types/VoteResult';
 
 declare let window: any;
 
@@ -29,47 +23,55 @@ function PublishResults() {
   const [decodeCorrect, setDecodeCorrect] = useState<boolean>(false);
   const [zeroCorrect, setZeroCorrect] = useState<boolean>(false);
   const [decryptionCorrect, setDecryptionCorrect] = useState<boolean>(false);
+  const [proofPublished, setProofPublished] = useState<boolean>(true);
+  const [resultsPublished, setResultsPublished] = useState<boolean>(true);
 
   const [creator, setCreator] = useState<string>("");
   const [currentAddress, setCurrentAddress] = useState<string>("");
 
   async function verifyProofs() {
-    const [r_encryptedTotal, r_encodedTotal, r_u, r_a, r_z, r_e, r_r] =
-      await getVerification();
+    try {
+      const [r_encryptedTotal, r_encodedTotal, u, a, z, e, r] =
+        await getVerification();
 
-    const raw_results = await getVotes();
+      const raw_results = await getVotes();
 
-    const encrypted_total = tallyVotes(raw_results);
-    const encryptedTotalMatch = encrypted_total.toString() == r_encryptedTotal;
-    setTallyCorrect(encryptedTotalMatch);
+      const encrypted_total = tallyVotes(raw_results);
 
-    const processed_results = await getResults();
-    const options: VoteOption[] = await getOptions();
-    const decoded_results = decodeResult(r_encodedTotal);
-    const calculated_results = options.map(function (option, i) {
-      return new VoteResult(option, decoded_results![i]);
-    });
-    const resultsCompare = processed_results!.map(
-      (entry: VoteResult, i: number) => {
-        return calculated_results[i].count == entry.count;
-      }
-    );
+      const encryptedTotalMatch =
+        encrypted_total.toString() === r_encryptedTotal;
+      setTallyCorrect(encryptedTotalMatch);
 
-    const resultsMatch = !resultsCompare.includes(false);
-    setDecodeCorrect(resultsMatch);
-    const negative_Total = BigInt(r_encodedTotal) * BigInt(-1);
-    const enc_negativeTotal = pubKey.encrypt(negative_Total, BigInt(r_r));
-    const enc_zero = pubKey.addition(
-      BigInt(encrypted_total),
-      enc_negativeTotal
-    );
-    const zeroMatch = r_u == enc_zero.toString();
-    setZeroCorrect(zeroMatch);
+      const processed_results = await getResults();
+      const options: VoteOption[] = await getOptions();
+      const decoded_results = decodeResult(r_encodedTotal);
+      const calculated_results = options.map(function (option, i) {
+        return new VoteResult(option, decoded_results![i]);
+      });
+      const resultsCompare = processed_results!.map(
+        (entry: VoteResult, i: number) => {
+          return calculated_results[i].count === entry.count;
+        }
+      );
 
-    const z_zero = pubKey.encrypt(BigInt(0), BigInt(r_z));
-    const proof = (BigInt(r_a) * BigInt(r_u) ** BigInt(r_e)) % pubKey._n2;
-    const zkpMatch = z_zero.toString() == proof.toString();
-    setDecryptionCorrect(zkpMatch);
+      const resultsMatch = !resultsCompare.includes(false);
+      setDecodeCorrect(resultsMatch);
+      const negative_Total = BigInt(r_encodedTotal) * BigInt(-1);
+      const enc_negativeTotal = pubKey.encrypt(negative_Total, BigInt(r));
+      const enc_zero = pubKey.addition(
+        BigInt(encrypted_total),
+        enc_negativeTotal
+      );
+      const zeroMatch = u === enc_zero.toString();
+      setZeroCorrect(zeroMatch);
+
+      const z_zero = pubKey.encrypt(BigInt(0), BigInt(z));
+      const proof = (BigInt(a) * BigInt(u) ** BigInt(e)) % pubKey._n2;
+      const zkpMatch = z_zero.toString() === proof.toString();
+      setDecryptionCorrect(zkpMatch);
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   useEffect(() => {
@@ -78,6 +80,10 @@ function PublishResults() {
       setCreator(creator);
       const address = await requestAccount();
       setCurrentAddress(address[0]);
+      const proofPub = await getProofPublished();
+      setProofPublished(proofPub);
+      const resultsPub = await getResultsPublished();
+      setResultsPublished(resultsPub);
       verifyProofs();
     }
     initialLoad();
@@ -92,7 +98,9 @@ function PublishResults() {
           />
           <br />
           <br />
-
+          {!proofPublished && (
+            <SimpleDialog message="Results have not yet been published."></SimpleDialog>
+          )}
           <Grid container spacing={3} alignItems="flex-start">
             <Grid container item xs={2}></Grid>
             <Grid container item spacing={3} xs={8} alignItems="flex-start">
@@ -113,7 +121,7 @@ function PublishResults() {
               <Grid item xs={12} alignItems="center">
                 <Typography color="white" style={{ wordWrap: "break-word" }}>
                   Decoding Correctness:{" "}
-                  {tallyCorrect ? (
+                  {decodeCorrect ? (
                     <DoneOutlinedIcon
                       style={{ position: "relative", top: "5px" }}
                     />

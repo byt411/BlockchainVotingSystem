@@ -102,3 +102,20 @@ export async function getVotes() {
     }
   }
 }
+
+export async function getE() {
+  if (typeof window.ethereum !== "undefined") {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const contract = new ethers.Contract(
+      electionAddress,
+      Election.abi,
+      provider
+    );
+    try {
+      const e = await contract.getE();
+      return e;
+    } catch (err: unknown) {
+      handleRevert(err);
+    }
+  }
+}

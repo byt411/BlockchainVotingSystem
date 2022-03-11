@@ -1,37 +1,23 @@
-import React, { FC } from "react";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import DialogTitle from "@mui/material/DialogTitle";
-import Dialog from "@mui/material/Dialog";
-import VoteResult from "../types/VoteResult";
+import { DialogContent, DialogContentText } from '@mui/material';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import React, { FC, useState } from 'react';
 
 interface SimpleDialogProps {
-  open: boolean;
-  selectedValue: string;
-  onClose: (value: string) => void;
-  votes: VoteResult[];
+  message: string;
 }
 
-const SimpleDialog: FC<SimpleDialogProps> = ({
-  open,
-  selectedValue,
-  onClose,
-  votes,
-}) => {
+const SimpleDialog: FC<SimpleDialogProps> = ({ message }) => {
+  const [open, setOpen] = useState<boolean>(true);
   const handleClose = () => {
-    onClose(selectedValue);
+    setOpen(false);
   };
-
   return (
     <Dialog onClose={handleClose} open={open}>
-      <DialogTitle>Election Results</DialogTitle>
-      <List>
-        {votes.map((voteResult, index) => (
-          <ListItem>
-            {voteResult.option.name}, {voteResult.count}
-          </ListItem>
-        ))}
-      </List>
+      <DialogTitle>Warning</DialogTitle>
+      <DialogContent>
+        <DialogContentText>{message}</DialogContentText>
+      </DialogContent>
     </Dialog>
   );
 };
