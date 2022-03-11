@@ -1,8 +1,8 @@
-import { ethers } from 'ethers';
+import { ethers } from "ethers";
 
-import Election from '../artifacts/contracts/Election.sol/Election.json';
-import { electionAddress, pubKey } from '../Election';
-import VoteOption from '../types/VoteOption';
+import Election from "../artifacts/contracts/Election.sol/Election.json";
+import { electionAddress, pubKey } from "../Election";
+import VoteOption from "../types/VoteOption";
 
 declare let window: any;
 export async function requestAccount() {
@@ -38,7 +38,7 @@ export async function getResultsPublished() {
       provider
     );
     try {
-      const resultsPublished = await contract.getResultsPublished();
+      const resultsPublished = await contract.resultsPublished();
       return resultsPublished;
     } catch (err) {
       console.log("Error: ", err);
@@ -55,7 +55,7 @@ export async function getProofPublished() {
       provider
     );
     try {
-      const resultsPublished = await contract.getProofPublished();
+      const resultsPublished = await contract.proofPublished();
       return resultsPublished;
     } catch (err) {
       console.log("Error: ", err);
@@ -72,7 +72,7 @@ export async function getCreator() {
       provider
     );
     try {
-      const creator = await contract.getCreator();
+      const creator = await contract.creator();
       return creator;
     } catch (err) {
       console.log("Error: ", err);

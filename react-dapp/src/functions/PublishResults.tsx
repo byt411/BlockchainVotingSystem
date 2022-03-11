@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import * as paillierBigint from "paillier-bigint";
 
 import Election from "../artifacts/contracts/Election.sol/Election.json";
-import { electionAddress, pubKey, maxVotes } from "../Election";
+import { electionAddress, maxVotes, pubKey } from "../Election";
 import VoteResult from "../types/VoteResult";
 import { handleRevert } from "./Common";
 
@@ -112,7 +112,7 @@ export async function getE() {
       provider
     );
     try {
-      const e = await contract.getE();
+      const e = await contract.e();
       return e;
     } catch (err: unknown) {
       handleRevert(err);

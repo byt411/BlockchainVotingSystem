@@ -2,17 +2,17 @@
 pragma solidity ^0.8.12;
 
 contract Election {
-    address creator;
-    uint256 endtime;
-    bool resultsPublished;
-    bool proofPublished;
+    address public creator;
+    uint256 public endtime;
+    bool public resultsPublished;
+    bool public proofPublished;
     string encryptedTotal;
     string encodedTotal;
 
     string u;
     string a;
     string z;
-    string e;
+    string public e;
     string negativeR;
 
     struct VoteOption {
@@ -27,12 +27,12 @@ contract Election {
         uint32 count;
     }
 
-    string[] votes;
+    string[] public votes;
     address[] voters;
     mapping(address => uint256) voteMap;
     mapping(string => uint256) optionMap;
-    VoteOption[4] options;
-    VoteResult[4] results;
+    VoteOption[4] public options;
+    VoteResult[4] public results;
 
     constructor() {
         options[0] = VoteOption(
@@ -71,18 +71,6 @@ contract Election {
         e = "1234";
         proofPublished = false;
         resultsPublished = false;
-    }
-
-    function getOptions() public view returns (VoteOption[4] memory) {
-        return options;
-    }
-
-    function getCreator() public view returns (address) {
-        return creator;
-    }
-
-    function getEndTime() public view returns (uint256) {
-        return endtime;
     }
 
     function publishResults(VoteResult[] memory submittedResults) public {
@@ -143,26 +131,6 @@ contract Election {
         return (encryptedTotal, encodedTotal, u, a, z, e, negativeR);
     }
 
-    function getE() public view returns (string memory) {
-        return e;
-    }
-
-    function getVotes() public view returns (string[] memory) {
-        return votes;
-    }
-
-    function getResults() public view returns (VoteResult[4] memory) {
-        return results;
-    }
-
-    function getProofPublished() public view returns (bool) {
-        return proofPublished;
-    }
-
-    function getResultsPublished() public view returns (bool) {
-        return resultsPublished;
-    }
-
     function recordVote(string memory _vote) public {
         // require((block.timestamp < endtime) && !resultsPublished && !proofPublished, "Election has closed.");
         if (voteMap[msg.sender] == 0) {
@@ -171,5 +139,17 @@ contract Election {
         } else {
             votes[voteMap[msg.sender]] = _vote;
         }
+    }
+
+    function getOptions() public view returns (VoteOption[4] memory) {
+        return options;
+    }
+
+    function getResults() public view returns (VoteResult[4] memory) {
+        return results;
+    }
+
+    function getVotes() public view returns (string[] memory) {
+        return votes;
     }
 }

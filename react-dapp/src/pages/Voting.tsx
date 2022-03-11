@@ -33,6 +33,7 @@ function Voting() {
   useEffect(() => {
     async function loadOptionsCreatorCurrentAddress() {
       const options = await getOptions();
+      console.log(options);
       setOptions(options);
       setRandomOptions(randomize(options));
       const creator = await getCreator();
