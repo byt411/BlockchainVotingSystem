@@ -1,19 +1,29 @@
-import './Voting.css';
+import "./Voting.css";
 
-import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
-import DoneOutlinedIcon from '@mui/icons-material/DoneOutlined';
-import { Grid, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
+import DoneOutlinedIcon from "@mui/icons-material/DoneOutlined";
+import { Grid, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
 
-import PersistentDrawerLeft from '../components/PersistentDrawerLeft';
-import SimpleDialog from '../components/SimpleDialog';
-import { pubKey } from '../Election';
-import { getCreator, getOptions, getProofPublished, getResultsPublished, requestAccount } from '../functions/Common';
-import { decodeResult, getVotes, tallyVotes } from '../functions/PublishResults';
-import { getResults } from '../functions/Results';
-import { getVerification } from '../functions/Verification';
-import VoteOption from '../types/VoteOption';
-import VoteResult from '../types/VoteResult';
+import PersistentDrawerLeft from "../components/PersistentDrawerLeft";
+import SimpleDialog from "../components/SimpleDialog";
+import { pubKey } from "../Election";
+import {
+  getCreator,
+  getOptions,
+  getProofPublished,
+  getResultsPublished,
+  requestAccount,
+} from "../functions/Common";
+import {
+  decodeResult,
+  getVotes,
+  tallyVotes,
+} from "../functions/PublishResults";
+import { getResults } from "../functions/Results";
+import { getVerification } from "../functions/Verification";
+import VoteOption from "../types/VoteOption";
+import VoteResult from "../types/VoteResult";
 
 declare let window: any;
 
@@ -98,7 +108,7 @@ function PublishResults() {
           />
           <br />
           <br />
-          {!proofPublished && (
+          {!(proofPublished || resultsPublished) && (
             <SimpleDialog message="Results have not yet been published."></SimpleDialog>
           )}
           <Grid container spacing={3} alignItems="flex-start">
