@@ -42,7 +42,7 @@ const VoteOptionCard: FC<VoteOptionProps> = ({
       </CardContent>
       <CardActions style={{ justifyContent: "center" }}>
         {!disabled ? (
-          <SimpleButton onClick={onClick}>Vote</SimpleButton>
+          <SimpleButton onClick={onClick!}>Vote</SimpleButton>
         ) : (
           <Button variant="outlined">
             <DoneIcon />

@@ -1,8 +1,7 @@
 import VoteOption from "./VoteOption";
 
-type VoteResult = {
-  option: VoteOption;
-  count: number;
-};
+class VoteResult {
+  constructor(public option: VoteOption, public count: number) {}
+}
 
 export default VoteResult;
