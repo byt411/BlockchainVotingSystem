@@ -1,7 +1,9 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.12;
+import {VoteOption} from "./ElectionStructs.sol";
 
 contract Election {
+    string public title;
     address public creator;
     uint256 public endtime;
     bool public resultsPublished;
@@ -15,13 +17,6 @@ contract Election {
     string public e;
     string negativeR;
 
-    struct VoteOption {
-        string name;
-        string acronym;
-        string logourl;
-        uint16 power;
-    }
-
     struct VoteResult {
         VoteOption option;
         uint32 count;
@@ -31,11 +26,17 @@ contract Election {
     address[] voters;
     mapping(address => uint256) voteMap;
     mapping(string => uint256) optionMap;
-    VoteOption[4] public options;
-    VoteResult[4] public results;
+    VoteOption[] public options;
+    VoteResult[] public results;
 
-    constructor() {
-        options[0] = VoteOption(
+    constructor(
+        VoteOption[] memory _options,
+        uint256 _endtime,
+        string memory _e,
+        string memory _title,
+        string memory _encryptedZero
+    ) {
+        /* options[0] = VoteOption(
             "Partido Popular",
             "PP",
             "https://upload.wikimedia.org/wikipedia/commons/3/38/PP_icono_2019.svg",
@@ -68,7 +69,18 @@ contract Election {
         );
         endtime = block.timestamp + 180;
         creator = msg.sender;
-        e = "1234";
+        e = "1234"; */
+
+        for (uint256 i = 0; i < results.length; i++) {
+            options.push(_options[i]);
+            results[i] = VoteResult(options[i], 0);
+            optionMap[options[i].name] = i;
+        }
+        votes.push(_encryptedZero);
+        endtime = _endtime;
+        e = _e;
+        title = _title;
+        creator = msg.sender;
         proofPublished = false;
         resultsPublished = false;
     }
@@ -141,11 +153,11 @@ contract Election {
         }
     }
 
-    function getOptions() public view returns (VoteOption[4] memory) {
+    function getOptions() public view returns (VoteOption[] memory) {
         return options;
     }
 
-    function getResults() public view returns (VoteResult[4] memory) {
+    function getResults() public view returns (VoteResult[] memory) {
         return results;
     }
 
