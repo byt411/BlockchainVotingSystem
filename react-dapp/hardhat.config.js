@@ -35,7 +35,6 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
     ropsten: {
       url: "https://ropsten.infura.io/v3/41a7a191d3be4189961b3248353c1eb9",
       accounts: [`0xd4c705603ee106edb264a6163ec2afe9f96cd98de4b6552d929f932e09e07368`],
-      gasPrice: 5000000000,
     }
   }
 };
