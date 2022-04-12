@@ -2,7 +2,6 @@ import React, { FC } from "react";
 import { styled, TextField } from "@mui/material";
 interface InputProps {
   setState: (newState: string) => void;
-  state: string;
   label: string;
 }
 
@@ -35,7 +34,7 @@ const CssTextField = styled(TextField)({
   },
 });
 
-const SimpleInput: FC<InputProps> = ({ setState, state, label }) => {
+const SimpleInput: FC<InputProps> = ({ setState, label }) => {
   return (
     <CssTextField
       onChange={(e) => setState(e.target.value)}

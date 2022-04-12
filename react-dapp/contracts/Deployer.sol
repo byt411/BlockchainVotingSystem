@@ -4,8 +4,6 @@ import {VoteOption} from "./ElectionStructs.sol";
 import "./Election.sol";
 
 contract Deployer {
-    constructor() {}
-
     function deployElection(
         VoteOption[] memory options,
         uint256 endtime,

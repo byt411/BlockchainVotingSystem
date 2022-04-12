@@ -23,11 +23,10 @@ contract Election {
     }
 
     string[] public votes;
-    address[] voters;
     mapping(address => uint256) voteMap;
     mapping(string => uint256) optionMap;
-    VoteOption[] public options;
-    VoteResult[] public results;
+    VoteOption[10] public options;
+    VoteResult[10] public results;
 
     constructor(
         VoteOption[] memory _options,
@@ -70,9 +69,13 @@ contract Election {
         endtime = block.timestamp + 180;
         creator = msg.sender;
         e = "1234"; */
-
         for (uint256 i = 0; i < results.length; i++) {
-            options.push(_options[i]);
+            options[i] = VoteOption(
+                _options[i].name,
+                _options[i].acronym,
+                _options[i].logourl,
+                _options[i].power
+            );
             results[i] = VoteResult(options[i], 0);
             optionMap[options[i].name] = i;
         }
@@ -153,11 +156,11 @@ contract Election {
         }
     }
 
-    function getOptions() public view returns (VoteOption[] memory) {
+    function getOptions() public view returns (VoteOption[10] memory) {
         return options;
     }
 
-    function getResults() public view returns (VoteResult[] memory) {
+    function getResults() public view returns (VoteResult[10] memory) {
         return results;
     }
 

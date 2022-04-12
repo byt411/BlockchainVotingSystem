@@ -5,6 +5,7 @@ import PublishResults from "./pages/PublishResults";
 import Results from "./pages/Results";
 import Voting from "./pages/Voting";
 import Verification from "./pages/Verification";
+import Deploy from "./pages/Deploy";
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
           <Route path="/results" element={<Results />}></Route>
           <Route path="/publishresults" element={<PublishResults />}></Route>
           <Route path="/verification" element={<Verification />}></Route>
+          <Route path="/deploy" element={<Deploy />}></Route>
         </Routes>
       </div>
     </Router>

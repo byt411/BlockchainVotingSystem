@@ -1,14 +1,14 @@
-import './Voting.css';
+import "./Voting.css";
 
-import { Grid, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import { Grid, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
 
-import PersistentDrawerLeft from '../components/PersistentDrawerLeft';
-import SimpleButton from '../components/SimpleButton';
-import SimpleInput from '../components/SimpleInput';
-import VoteResultCard from '../components/VoteResultCard';
-import { privKey, pubKey } from '../Election';
-import { getCreator, getOptions, requestAccount } from '../functions/Common';
+import PersistentDrawerLeft from "../components/PersistentDrawerLeft";
+import SimpleButton from "../components/SimpleButton";
+import SimpleInput from "../components/SimpleInput";
+import VoteResultCard from "../components/VoteResultCard";
+import { privKey, pubKey } from "../Election";
+import { getCreator, getOptions, requestAccount } from "../functions/Common";
 import {
   decodeResult,
   decryptTotal,
@@ -17,9 +17,9 @@ import {
   publishProofs,
   publishResults,
   tallyVotes,
-} from '../functions/PublishResults';
-import VoteOption from '../types/VoteOption';
-import VoteResult from '../types/VoteResult';
+} from "../functions/PublishResults";
+import VoteOption from "../types/VoteOption";
+import VoteResult from "../types/VoteResult";
 
 declare let window: any;
 
@@ -170,24 +170,16 @@ function PublishResults() {
             </Grid>
             <Grid container item spacing={3} xs={4} alignItems="flex-start">
               <Grid item xs={12}>
-                <SimpleInput
-                  setState={setLambda}
-                  state={lambda}
-                  label="Lambda:"
-                ></SimpleInput>
+                <SimpleInput setState={setLambda} label="Lambda:"></SimpleInput>
               </Grid>
               <Grid item xs={12}>
-                <SimpleInput
-                  setState={setMu}
-                  state={mu}
-                  label="Mu:"
-                ></SimpleInput>
+                <SimpleInput setState={setMu} label="Mu:"></SimpleInput>
               </Grid>
               <Grid item xs={12}>
-                <SimpleInput setState={setP} state={p} label="P:"></SimpleInput>
+                <SimpleInput setState={setP} label="P:"></SimpleInput>
               </Grid>
               <Grid item xs={12}>
-                <SimpleInput setState={setQ} state={q} label="Q:"></SimpleInput>
+                <SimpleInput setState={setQ} label="Q:"></SimpleInput>
               </Grid>
               <Grid item xs={12}>
                 <SimpleButton onClick={processVotes}>
