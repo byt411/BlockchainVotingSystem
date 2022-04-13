@@ -58,9 +58,7 @@ function Deploy() {
     <>
       <div className="App">
         <header className="App-header">
-          <PersistentDrawerLeft
-            showCreator={currentAddress === currentAddress}
-          />
+          <PersistentDrawerLeft showCreator={currentAddress === creator} />
           <br />
           <br />
 

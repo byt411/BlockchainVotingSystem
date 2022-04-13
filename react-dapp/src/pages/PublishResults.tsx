@@ -5,9 +5,10 @@ import React, { useEffect, useState } from 'react';
 
 import { Grid, Typography } from '@mui/material';
 
-import { pubKey } from '../Common';
+import { electionAddress, pubKey } from '../Common';
 import PersistentDrawerLeft from '../components/PersistentDrawerLeft';
 import SimpleButton from '../components/SimpleButton';
+import SimpleDialog from '../components/SimpleDialog';
 import SimpleInput from '../components/SimpleInput';
 import VoteResultCard from '../components/VoteResultCard';
 import { getCreator, getOptions, requestAccount } from '../functions/Common';
@@ -106,7 +107,7 @@ function PublishResults() {
       const address = await requestAccount();
       setCurrentAddress(address[0]);
     }
-    initialLoad();
+    electionAddress !== "" && initialLoad();
   }, [currentAddress]);
 
   return (
@@ -212,6 +213,9 @@ function PublishResults() {
           </Grid>
         </header>
       </div>
+      {electionAddress === "" && (
+        <SimpleDialog message="You have not selected an election!"></SimpleDialog>
+      )}
     </>
   );
 }

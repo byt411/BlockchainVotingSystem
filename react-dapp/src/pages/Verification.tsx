@@ -6,7 +6,7 @@ import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import DoneOutlinedIcon from '@mui/icons-material/DoneOutlined';
 import { Grid, Typography } from '@mui/material';
 
-import { pubKey } from '../Common';
+import { electionAddress, pubKey } from '../Common';
 import PersistentDrawerLeft from '../components/PersistentDrawerLeft';
 import SimpleDialog from '../components/SimpleDialog';
 import {
@@ -89,7 +89,7 @@ function PublishResults() {
       setResultsPublished(resultsPub);
       verifyProofs();
     }
-    initialLoad();
+    electionAddress !== "" && initialLoad();
   }, [currentAddress]);
 
   return (
@@ -168,6 +168,9 @@ function PublishResults() {
           </Grid>
         </header>
       </div>
+      {electionAddress === "" && (
+        <SimpleDialog message="You have not selected an election!"></SimpleDialog>
+      )}
     </>
   );
 }

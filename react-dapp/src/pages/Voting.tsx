@@ -1,17 +1,15 @@
-import "./Voting.css";
+import './Voting.css';
 
-import { Grid } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
-import PersistentDrawerLeft from "../components/PersistentDrawerLeft";
-import VoteOptionCard from "../components/VoteOptionCard";
-import {
-  getCreator,
-  getOptions,
-  recordVote,
-  requestAccount,
-} from "../functions/Common";
-import VoteOption from "../types/VoteOption";
+import { Grid } from '@mui/material';
+
+import { electionAddress } from '../Common';
+import PersistentDrawerLeft from '../components/PersistentDrawerLeft';
+import SimpleDialog from '../components/SimpleDialog';
+import VoteOptionCard from '../components/VoteOptionCard';
+import { getCreator, getOptions, recordVote, requestAccount } from '../functions/Common';
+import VoteOption from '../types/VoteOption';
 
 function Voting() {
   // store greeting in local state
@@ -22,6 +20,9 @@ function Voting() {
   // request access to the user's MetaMask account
 
   function randomize(input: any[]) {
+    if (input.length === 0) {
+      return [];
+    }
     let array = input.slice();
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -41,7 +42,7 @@ function Voting() {
       const address = await requestAccount();
       setCurrentAddress(address[0]);
     }
-    loadOptionsCreatorCurrentAddress();
+    electionAddress !== "" && loadOptionsCreatorCurrentAddress();
   }, []);
   return (
     <>
@@ -68,6 +69,9 @@ function Voting() {
           </Grid>
         </header>
       </div>
+      {electionAddress === "" && (
+        <SimpleDialog message="You have not selected an election!"></SimpleDialog>
+      )}
     </>
   );
 }

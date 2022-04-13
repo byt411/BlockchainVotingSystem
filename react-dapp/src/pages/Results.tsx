@@ -1,8 +1,10 @@
 import './Voting.css';
 
-import { Grid } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
+import { Grid } from '@mui/material';
+
+import { electionAddress } from '../Common';
 import PersistentDrawerLeft from '../components/PersistentDrawerLeft';
 import SimpleDialog from '../components/SimpleDialog';
 import VoteResultCard from '../components/VoteResultCard';
@@ -32,7 +34,7 @@ function Results() {
       const resultsPub = await getResultsPublished();
       setResultsPublished(resultsPub);
     }
-    loadResultsCreatorCurrentAddress();
+    electionAddress !== "" && loadResultsCreatorCurrentAddress();
   }, [currentAddress, results]);
 
   return (
@@ -58,6 +60,9 @@ function Results() {
           </Grid>
         </header>
       </div>
+      {electionAddress === "" && (
+        <SimpleDialog message="You have not selected an election!"></SimpleDialog>
+      )}
     </>
   );
 }

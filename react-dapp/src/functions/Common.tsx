@@ -36,7 +36,9 @@ export async function getOptions() {
     );
     try {
       const options = await contract.getOptions();
-      return options;
+      return options.filter(function (option: VoteOption) {
+        return option.name !== "";
+      });
     } catch (err) {
       console.log("Error: ", err);
     }

@@ -41,9 +41,7 @@ function SelectElection() {
     <>
       <div className="App">
         <header className="App-header">
-          <PersistentDrawerLeft
-            showCreator={currentAddress === currentAddress}
-          />
+          <PersistentDrawerLeft showCreator={currentAddress === creator} />
           <Grid
             container
             direction="column"
