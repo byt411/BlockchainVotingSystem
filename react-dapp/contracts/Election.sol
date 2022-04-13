@@ -33,7 +33,8 @@ contract Election {
         uint256 _endtime,
         string memory _e,
         string memory _title,
-        string memory _encryptedZero
+        string memory _encryptedZero,
+        address _creator
     ) {
         /* options[0] = VoteOption(
             "Partido Popular",
@@ -69,7 +70,7 @@ contract Election {
         endtime = block.timestamp + 180;
         creator = msg.sender;
         e = "1234"; */
-        for (uint256 i = 0; i < results.length; i++) {
+        for (uint256 i = 0; i < _options.length; i++) {
             options[i] = VoteOption(
                 _options[i].name,
                 _options[i].acronym,
@@ -86,6 +87,7 @@ contract Election {
         creator = msg.sender;
         proofPublished = false;
         resultsPublished = false;
+        creator = _creator;
     }
 
     function publishResults(VoteResult[] memory submittedResults) public {

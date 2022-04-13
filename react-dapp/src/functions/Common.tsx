@@ -1,8 +1,8 @@
-import { ethers } from "ethers";
+import { ethers } from 'ethers';
 
-import Election from "../artifacts/contracts/Election.sol/Election.json";
-import { electionAddress, pubKey } from "../Election";
-import VoteOption from "../types/VoteOption";
+import Election from '../artifacts/contracts/Election.sol/Election.json';
+import { electionAddress, pubKey } from '../Common';
+import VoteOption from '../types/VoteOption';
 
 declare let window: any;
 export async function requestAccount() {
@@ -10,6 +10,20 @@ export async function requestAccount() {
     method: "eth_requestAccounts",
   });
   return address;
+}
+
+export async function getTitle(inputAddress: string) {
+  if (typeof window.ethereum !== "undefined") {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const contract = new ethers.Contract(inputAddress, Election.abi, provider);
+    try {
+      console.log(inputAddress);
+      const title = await contract.title();
+      return title;
+    } catch (err) {
+      console.log("Error: ", err);
+    }
+  }
 }
 
 export async function getOptions() {

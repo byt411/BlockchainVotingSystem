@@ -1,25 +1,29 @@
-import "./Voting.css";
+import './Voting.css';
 
-import { Grid, IconButton, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import AddIcon from "@mui/icons-material/Add";
-import PersistentDrawerLeft from "../components/PersistentDrawerLeft";
-import SimpleButton from "../components/SimpleButton";
-import SimpleInput from "../components/SimpleInput";
-import VoteResultCard from "../components/VoteResultCard";
-import { privKey, pubKey } from "../Election";
-import { getCreator, getOptions, requestAccount } from "../functions/Common";
-import { deployElection } from "../functions/Deploy";
-import VoteResult from "../types/VoteResult";
-import VoteOptionEntry from "../components/VoteOptionEntry";
-import VoteOption from "../types/VoteOption";
+import React, { useEffect, useState } from 'react';
+
+import AddIcon from '@mui/icons-material/Add';
+import { Grid } from '@mui/material';
+
+import PersistentDrawerLeft from '../components/PersistentDrawerLeft';
+import SimpleButton from '../components/SimpleButton';
+import SimpleDialog from '../components/SimpleDialog';
+import SimpleInput from '../components/SimpleInput';
+import VoteOptionEntry from '../components/VoteOptionEntry';
+import { getCreator, requestAccount } from '../functions/Common';
+import { deployElection } from '../functions/Deploy';
+import VoteOption from '../types/VoteOption';
 
 declare let window: any;
 
 function Deploy() {
-  function nothing() {
+  const [electionDeployed, setElectionDeployed] = useState<boolean>(false);
+  const [address, setAddress] = useState<string>("");
+  async function nothing() {
     const options = optionArray.map((option: any) => option.props.voteOption);
-    deployElection(options, endtime, title);
+    const electionAddress = await deployElection(options, endtime, title);
+    setElectionDeployed(true);
+    setAddress(electionAddress);
   }
   function addOption() {
     const tempArray: React.ReactElement[] = [
@@ -107,6 +111,12 @@ function Deploy() {
               </Grid>
             </Grid>
           </Grid>
+          {electionDeployed && (
+            <SimpleDialog
+              message={"Election has been deployed at address " + address + "!"}
+              title={"Success!"}
+            ></SimpleDialog>
+          )}
         </header>
       </div>
     </>

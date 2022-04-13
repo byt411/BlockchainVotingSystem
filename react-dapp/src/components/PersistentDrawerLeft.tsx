@@ -1,25 +1,29 @@
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import MailIcon from "@mui/icons-material/Mail";
-import MenuIcon from "@mui/icons-material/Menu";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import { ListItemButton } from "@mui/material";
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import CssBaseline from "@mui/material/CssBaseline";
-import Divider from "@mui/material/Divider";
-import Drawer from "@mui/material/Drawer";
-import IconButton from "@mui/material/IconButton";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import { styled, useTheme } from "@mui/material/styles";
-import Toolbar from "@mui/material/Toolbar";
-import * as React from "react";
-import { FC } from "react";
-import { Link } from "react-router-dom";
-const drawerWidth = 200;
+import * as React from 'react';
+import { Link } from 'react-router-dom';
+
+import {
+    AddBoxOutlined, BallotOutlined, CompareArrows, HowToVoteOutlined, PollOutlined, UploadOutlined
+} from '@mui/icons-material';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import MenuIcon from '@mui/icons-material/Menu';
+import { ListItemButton, Typography } from '@mui/material';
+import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import CssBaseline from '@mui/material/CssBaseline';
+import Divider from '@mui/material/Divider';
+import Drawer from '@mui/material/Drawer';
+import IconButton from '@mui/material/IconButton';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import { styled, useTheme } from '@mui/material/styles';
+import Toolbar from '@mui/material/Toolbar';
+
+import { electionTitle } from '../Common';
+
+const drawerWidth = 225;
 
 interface AppBarProps extends MuiAppBarProps {
   open?: boolean;
@@ -53,7 +57,9 @@ interface PersistentDrawerProps {
   showCreator?: boolean;
 }
 
-const PersistentDrawerLeft: FC<PersistentDrawerProps> = ({ showCreator }) => {
+const PersistentDrawerLeft: React.FC<PersistentDrawerProps> = ({
+  showCreator,
+}) => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
@@ -110,43 +116,71 @@ const PersistentDrawerLeft: FC<PersistentDrawerProps> = ({ showCreator }) => {
         </DrawerHeader>
         <Divider />
         <List>
+          <ListItem>
+            <Typography variant="body2">{electionTitle}</Typography>
+          </ListItem>
+          <ListItemButton component={Link} to="/select">
+            <ListItemIcon>
+              <CompareArrows />
+            </ListItemIcon>
+            <ListItemText
+              primary="Change Election"
+              primaryTypographyProps={{ variant: "subtitle1" }}
+            ></ListItemText>
+          </ListItemButton>
+        </List>
+        <Divider />
+        <List>
           <ListItemButton component={Link} to="/">
             <ListItemIcon>
-              <InboxIcon />
+              <HowToVoteOutlined />
             </ListItemIcon>
-            <ListItemText primary="Vote"></ListItemText>
+            <ListItemText
+              primary="Vote"
+              primaryTypographyProps={{ variant: "subtitle1" }}
+            ></ListItemText>
           </ListItemButton>
           <ListItemButton component={Link} to="/results">
             <ListItemIcon>
-              <InboxIcon />
+              <PollOutlined />
             </ListItemIcon>
-            <ListItemText primary="Results"></ListItemText>
+            <ListItemText
+              primary="Results"
+              primaryTypographyProps={{ variant: "subtitle1" }}
+            ></ListItemText>
           </ListItemButton>
           <ListItemButton component={Link} to="/verification">
             <ListItemIcon>
-              <InboxIcon />
+              <BallotOutlined />
             </ListItemIcon>
-            <ListItemText primary="Verification"></ListItemText>
+            <ListItemText
+              primary="Verification"
+              primaryTypographyProps={{ variant: "subtitle1" }}
+            ></ListItemText>
           </ListItemButton>
           {showCreator && (
             <ListItemButton component={Link} to="/publishresults">
               <ListItemIcon>
-                <InboxIcon />
+                <UploadOutlined />
               </ListItemIcon>
-              <ListItemText primary="Upload Results"></ListItemText>
+              <ListItemText
+                primary="Upload Results"
+                primaryTypographyProps={{ variant: "subtitle1" }}
+              ></ListItemText>
             </ListItemButton>
           )}
         </List>
         <Divider />
         <List>
-          {["All mail", "Trash", "Spam"].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
+          <ListItemButton component={Link} to="/deploy">
+            <ListItemIcon>
+              <AddBoxOutlined />
+            </ListItemIcon>
+            <ListItemText
+              primary="Create Election"
+              primaryTypographyProps={{ variant: "subtitle1" }}
+            ></ListItemText>
+          </ListItemButton>
         </List>
       </Drawer>
     </Box>

@@ -1,25 +1,21 @@
-import "./Voting.css";
+import './Voting.css';
 
-import { Grid, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import * as paillierBigint from 'paillier-bigint';
+import React, { useEffect, useState } from 'react';
 
-import PersistentDrawerLeft from "../components/PersistentDrawerLeft";
-import SimpleButton from "../components/SimpleButton";
-import SimpleInput from "../components/SimpleInput";
-import VoteResultCard from "../components/VoteResultCard";
-import { privKey, pubKey } from "../Election";
-import { getCreator, getOptions, requestAccount } from "../functions/Common";
+import { Grid, Typography } from '@mui/material';
+
+import { pubKey } from '../Common';
+import PersistentDrawerLeft from '../components/PersistentDrawerLeft';
+import SimpleButton from '../components/SimpleButton';
+import SimpleInput from '../components/SimpleInput';
+import VoteResultCard from '../components/VoteResultCard';
+import { getCreator, getOptions, requestAccount } from '../functions/Common';
 import {
-  decodeResult,
-  decryptTotal,
-  getE,
-  getVotes,
-  publishProofs,
-  publishResults,
-  tallyVotes,
-} from "../functions/PublishResults";
-import VoteOption from "../types/VoteOption";
-import VoteResult from "../types/VoteResult";
+    decodeResult, decryptTotal, getE, getVotes, publishProofs, publishResults, tallyVotes
+} from '../functions/PublishResults';
+import VoteOption from '../types/VoteOption';
+import VoteResult from '../types/VoteResult';
 
 declare let window: any;
 
@@ -43,13 +39,13 @@ function PublishResults() {
 
   async function processVotes() {
     const options: VoteOption[] = await getOptions();
-    /*  const privKey = new paillierBigint.PrivateKey(
+    const privKey = new paillierBigint.PrivateKey(
       BigInt(lambda),
       BigInt(mu),
       pubKey,
       BigInt(p),
       BigInt(q)
-    ); */
+    );
     const raw_results = await getVotes();
     const encrypted_total = tallyVotes(raw_results);
 
@@ -69,13 +65,13 @@ function PublishResults() {
   }
 
   async function generateProofs() {
-    /* const privKey = new paillierBigint.PrivateKey(
+    const privKey = new paillierBigint.PrivateKey(
       BigInt(lambda),
       BigInt(mu),
       pubKey,
       BigInt(p),
       BigInt(q)
-    ); */
+    );
     const r_e = await getE();
     const calcA = pubKey.encrypt(BigInt(0));
     const r = privKey.getRandomFactor(calcA);

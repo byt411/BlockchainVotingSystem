@@ -1,7 +1,9 @@
-import { ethers } from "ethers";
-import { handleRevert } from "./Common";
-import { electionAddress } from "../Election";
-import Election from "../artifacts/contracts/Election.sol/Election.json";
+import { ethers } from 'ethers';
+
+import Election from '../artifacts/contracts/Election.sol/Election.json';
+import { electionAddress } from '../Common';
+import { handleRevert } from './Common';
+
 declare let window: any;
 export async function getVerification() {
   if (typeof window.ethereum !== "undefined") {

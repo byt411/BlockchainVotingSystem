@@ -40,6 +40,7 @@ const SimpleInput: FC<InputProps> = ({ setState, label }) => {
       onChange={(e) => setState(e.target.value)}
       variant="standard"
       label={label}
+      InputLabelProps={{ shrink: true }}
     ></CssTextField>
   );
 };

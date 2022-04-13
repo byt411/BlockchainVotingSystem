@@ -4,20 +4,27 @@ import {VoteOption} from "./ElectionStructs.sol";
 import "./Election.sol";
 
 contract Deployer {
+    event ElectionCreated(
+        address electionAddress,
+        string electionTitle,
+        uint256 electionEndtime
+    );
+
     function deployElection(
         VoteOption[] memory options,
         uint256 endtime,
         string memory e,
         string memory title,
         string memory encryptedZero
-    ) public returns (Election) {
+    ) public {
         Election newElection = new Election(
             options,
             endtime,
             e,
             title,
-            encryptedZero
+            encryptedZero,
+            msg.sender
         );
-        return newElection;
+        emit ElectionCreated(address(newElection), title, endtime);
     }
 }

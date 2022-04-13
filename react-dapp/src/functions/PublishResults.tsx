@@ -1,10 +1,10 @@
-import { ethers } from "ethers";
-import * as paillierBigint from "paillier-bigint";
+import { ethers } from 'ethers';
+import * as paillierBigint from 'paillier-bigint';
 
-import Election from "../artifacts/contracts/Election.sol/Election.json";
-import { electionAddress, maxVotes, pubKey } from "../Election";
-import VoteResult from "../types/VoteResult";
-import { handleRevert } from "./Common";
+import Election from '../artifacts/contracts/Election.sol/Election.json';
+import { electionAddress, maxVotes, pubKey } from '../Common';
+import VoteResult from '../types/VoteResult';
+import { handleRevert } from './Common';
 
 declare let window: any;
 export function tallyVotes(votes: string[]) {

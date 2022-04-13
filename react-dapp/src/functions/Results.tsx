@@ -1,8 +1,8 @@
-import { ethers } from "ethers";
+import { ethers } from 'ethers';
 
-import Election from "../artifacts/contracts/Election.sol/Election.json";
-import { electionAddress } from "../Election";
-import { handleRevert } from "./Common";
+import Election from '../artifacts/contracts/Election.sol/Election.json';
+import { electionAddress } from '../Common';
+import { handleRevert } from './Common';
 
 declare let window: any;
 export async function getResults() {

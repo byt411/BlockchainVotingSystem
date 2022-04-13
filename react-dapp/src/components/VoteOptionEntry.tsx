@@ -1,12 +1,10 @@
-import React, { FC, useState } from "react";
-import Card from "@mui/material/Card";
-import { Grid, Typography } from "@mui/material/";
-import CardContent from "@mui/material/CardContent";
-import { Button, CardActions } from "@mui/material";
-import SimpleButton from "./SimpleButton";
-import VoteOption from "../types/VoteOption";
-import DoneIcon from "@mui/icons-material/Done";
-import SimpleInput from "./SimpleInput";
+import React, { FC } from 'react';
+
+import { Grid } from '@mui/material/';
+
+import VoteOption from '../types/VoteOption';
+import SimpleInput from './SimpleInput';
+
 type VoteOptionEntryProps = {
   voteOption: VoteOption;
 };
