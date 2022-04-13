@@ -4,11 +4,13 @@ import React, { useEffect, useState } from 'react';
 
 import { Grid, Typography } from '@mui/material';
 
-import { electionAddress, electionTitle, setElectionAddress, setElectionTitle } from '../Common';
+import {
+    electionAddress, electionTitle, setElectionAddress, setElectionTitle, setPubKey
+} from '../Common';
 import PersistentDrawerLeft from '../components/PersistentDrawerLeft';
 import SimpleButton from '../components/SimpleButton';
 import SimpleInput from '../components/SimpleInput';
-import { getCreator, getTitle, requestAccount } from '../functions/Common';
+import { getCreator, getPubkey, getTitle, requestAccount } from '../functions/Common';
 
 declare let window: any;
 
@@ -34,6 +36,8 @@ function SelectElection() {
   async function updateVariables() {
     setElectionAddress(inputAddress);
     setElectionTitle(await getTitle(inputAddress));
+    const pubkey = await getPubkey();
+    setPubKey(pubkey?.n, pubkey?.g);
     console.log(electionTitle);
   }
 

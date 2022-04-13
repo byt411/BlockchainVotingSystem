@@ -1,11 +1,12 @@
-import { DialogContent, DialogContentText } from "@mui/material";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import React, { FC, useState } from "react";
+import React, { FC, useState } from 'react';
+
+import { DialogContent, DialogContentText } from '@mui/material';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
 
 interface SimpleDialogProps {
   title?: string;
-  message: string;
+  message: string | JSX.Element;
 }
 
 const SimpleDialog: FC<SimpleDialogProps> = ({

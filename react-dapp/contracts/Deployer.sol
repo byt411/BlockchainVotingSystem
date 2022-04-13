@@ -15,7 +15,9 @@ contract Deployer {
         uint256 endtime,
         string memory e,
         string memory title,
-        string memory encryptedZero
+        string memory encryptedZero,
+        string memory pubkeyN,
+        string memory pubkeyG
     ) public {
         Election newElection = new Election(
             options,
@@ -23,6 +25,8 @@ contract Deployer {
             e,
             title,
             encryptedZero,
+            pubkeyN,
+            pubkeyG,
             msg.sender
         );
         emit ElectionCreated(address(newElection), title, endtime);

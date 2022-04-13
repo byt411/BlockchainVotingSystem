@@ -1,9 +1,10 @@
 import './Voting.css';
 
+import * as paillierBigint from 'paillier-bigint';
 import React, { useEffect, useState } from 'react';
 
 import AddIcon from '@mui/icons-material/Add';
-import { Grid } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 
 import PersistentDrawerLeft from '../components/PersistentDrawerLeft';
 import SimpleButton from '../components/SimpleButton';
@@ -19,11 +20,37 @@ declare let window: any;
 function Deploy() {
   const [electionDeployed, setElectionDeployed] = useState<boolean>(false);
   const [address, setAddress] = useState<string>("");
-  async function nothing() {
+  const [message, setMessage] = useState<JSX.Element>(<></>);
+  async function createElection() {
     const options = optionArray.map((option: any) => option.props.voteOption);
-    const electionAddress = await deployElection(options, endtime, title);
+    const { publicKey, privateKey } = await paillierBigint.generateRandomKeys(
+      2048,
+      true
+    );
+    const electionAddress = await deployElection(
+      options,
+      endtime,
+      title,
+      publicKey
+    );
     setElectionDeployed(true);
     setAddress(electionAddress);
+    setMessage(
+      <>
+        <Typography variant="body2">Election deployed at address:</Typography>
+        <Typography variant="caption">{electionAddress}</Typography>
+        <Typography variant="body2">Private key lambda:</Typography>
+        <Typography variant="caption">
+          {privateKey.lambda.toString()}
+        </Typography>
+        <Typography variant="body2">Private key mu:</Typography>
+        <Typography variant="caption">{privateKey.mu.toString()}</Typography>
+        <Typography variant="body2">Private key P:</Typography>
+        <Typography variant="caption">{privateKey._p.toString()}</Typography>
+        <Typography variant="body2">Private key Q:</Typography>
+        <Typography variant="caption">{privateKey._q.toString()}</Typography>
+      </>
+    );
   }
   function addOption() {
     const tempArray: React.ReactElement[] = [
@@ -105,15 +132,12 @@ function Deploy() {
               justifyContent="center"
             >
               <Grid item xs={12}>
-                <SimpleButton onClick={nothing}>Deploy</SimpleButton>
+                <SimpleButton onClick={createElection}>Deploy</SimpleButton>
               </Grid>
             </Grid>
           </Grid>
           {electionDeployed && (
-            <SimpleDialog
-              message={"Election has been deployed at address " + address + "!"}
-              title={"Success!"}
-            ></SimpleDialog>
+            <SimpleDialog message={message} title={"Success!"}></SimpleDialog>
           )}
         </header>
       </div>

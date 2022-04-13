@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import * as paillierBigint from 'paillier-bigint';
 
 import Deployer from '../artifacts/contracts/Deployer.sol/Deployer.json';
 import { deployerAddress } from '../Common';
@@ -10,19 +11,23 @@ declare let window: any;
 export async function deployElection(
   options: VoteOption[],
   endtime: string,
-  title: string
+  title: string,
+  pubKey: paillierBigint.PublicKey
 ) {
   if (typeof window.ethereum !== "undefined") {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
     const contract = new ethers.Contract(deployerAddress, Deployer.abi, signer);
     try {
+      const random = require("random-bigint");
       const transaction = await contract.deployElection(
         options,
         Number(endtime),
-        "123",
+        BigInt(Math.floor(Math.random() * 1000000000000)),
         title,
-        "123"
+        pubKey.encrypt(BigInt(0)).toString(),
+        pubKey.n.toString(),
+        pubKey.g.toString()
       );
       const election = await transaction.wait();
       const electionData = election.events?.filter((x: any) => {

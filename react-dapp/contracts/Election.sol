@@ -16,6 +16,8 @@ contract Election {
     string z;
     string public e;
     string negativeR;
+    string public pubkeyN;
+    string public pubkeyG;
 
     struct VoteResult {
         VoteOption option;
@@ -34,6 +36,8 @@ contract Election {
         string memory _e,
         string memory _title,
         string memory _encryptedZero,
+        string memory _pubkeyN,
+        string memory _pubkeyG,
         address _creator
     ) {
         /* options[0] = VoteOption(
@@ -87,6 +91,8 @@ contract Election {
         creator = msg.sender;
         proofPublished = false;
         resultsPublished = false;
+        pubkeyN = _pubkeyN;
+        pubkeyG = _pubkeyG;
         creator = _creator;
     }
 
@@ -100,7 +106,7 @@ contract Election {
             "The verification proof has not yet been published."
         );
         require(!resultsPublished, "The results have already been published.");
-        for (uint256 i = 0; i < results.length; i++) {
+        for (uint256 i = 0; i < submittedResults.length; i++) {
             results[i].count = submittedResults[i].count;
         }
         resultsPublished = true;
@@ -118,7 +124,7 @@ contract Election {
             msg.sender == creator,
             "You are not authorized to perform this action."
         );
-        require(block.timestamp > endtime, "Election is still in progress.");
+        // require(block.timestamp > endtime, "Election is still in progress.");
         require(
             !proofPublished,
             "The verification proof has already been published."

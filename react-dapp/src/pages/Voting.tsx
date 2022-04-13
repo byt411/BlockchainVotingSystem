@@ -20,7 +20,7 @@ function Voting() {
   // request access to the user's MetaMask account
 
   function randomize(input: any[]) {
-    if (input.length === 0) {
+    if (input === undefined) {
       return [];
     }
     let array = input.slice();

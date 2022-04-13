@@ -48,6 +48,7 @@ function PublishResults() {
       const processed_results = await getResults();
       const options: VoteOption[] = await getOptions();
       const decoded_results = decodeResult(r_encodedTotal);
+      console.log(decoded_results);
       const calculated_results = options.map(function (option, i) {
         return new VoteResult(option, decoded_results![i]);
       });

@@ -96,6 +96,24 @@ export async function getCreator() {
   }
 }
 
+export async function getPubkey() {
+  if (typeof window.ethereum !== "undefined") {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const contract = new ethers.Contract(
+      electionAddress,
+      Election.abi,
+      provider
+    );
+    try {
+      const n = await contract.pubkeyN();
+      const g = await contract.pubkeyG();
+      return { n, g };
+    } catch (err) {
+      console.log("Error: ", err);
+    }
+  }
+}
+
 export async function recordVote(vote: VoteOption) {
   if (typeof window.ethereum !== "undefined") {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
