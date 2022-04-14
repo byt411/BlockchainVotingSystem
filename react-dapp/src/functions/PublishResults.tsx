@@ -81,6 +81,8 @@ export async function publishProofs(
       );
       await transaction.wait();
     } catch (err: unknown) {
+      console.log(err);
+      console.log(typeof err);
       handleRevert(err);
     }
   }

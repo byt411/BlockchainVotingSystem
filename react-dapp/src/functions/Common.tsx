@@ -114,10 +114,6 @@ export async function getPubkey() {
   }
 }
 
-export function handleRevert(err: unknown) {
-  if (err instanceof Error) {
-    console.log(err.message);
-    const message = err.message.match(/"message":"(.*?)"/)![0].slice(11, -1);
-    alert(message.replace("execution reverted: ", ""));
-  }
+export function handleRevert(err: any) {
+  alert(err.message);
 }

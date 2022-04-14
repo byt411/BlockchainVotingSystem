@@ -112,7 +112,7 @@ contract Election {
             msg.sender == creator,
             "You are not authorized to perform this action."
         );
-        // require(block.timestamp > endtime, "Election is still in progress.");
+        require(block.timestamp > endtime, "Election is still in progress.");
         require(
             !proofPublished,
             "The verification proof has already been published."
@@ -143,7 +143,10 @@ contract Election {
     }
 
     function recordVote(string memory _vote) public {
-        // require((block.timestamp < endtime) && !resultsPublished && !proofPublished, "Election has closed.");
+        require(
+            (block.timestamp < endtime) && !resultsPublished && !proofPublished,
+            "Election has closed."
+        );
         if (voteMap[msg.sender] == 0) {
             votes.push(_vote);
             voteMap[msg.sender] = votes.length - 1;
