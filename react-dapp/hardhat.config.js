@@ -22,6 +22,14 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
     settings: {
       optimizer: {
         enabled: true,
+        runs: 2000,
+        details: {
+          yul: true,
+          yulDetails: {
+            stackAllocation: true,
+            optimizerSteps: "dhfoDgvulfnTUtnIf"
+          }
+        }
       }
     }
   },

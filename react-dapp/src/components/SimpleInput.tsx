@@ -1,8 +1,9 @@
-import React, { FC } from "react";
-import { styled, TextField } from "@mui/material";
+import React, { FC } from 'react';
+
+import { styled, TextField } from '@mui/material';
+
 interface InputProps {
   setState: (newState: string) => void;
-  state: string;
   label: string;
 }
 
@@ -22,25 +23,15 @@ const CssTextField = styled(TextField)({
   "& .MuiInput-underline:before": {
     borderBottomColor: "white",
   },
-  "& .MuiOutlinedInput-root": {
-    "& fieldset": {
-      borderColor: "red",
-    },
-    "&:hover fieldset": {
-      borderColor: "yellow",
-    },
-    "&.Mui-focused fieldset": {
-      borderColor: "green",
-    },
-  },
 });
 
-const SimpleInput: FC<InputProps> = ({ setState, state, label }) => {
+const SimpleInput: FC<InputProps> = ({ setState, label }) => {
   return (
     <CssTextField
       onChange={(e) => setState(e.target.value)}
       variant="standard"
       label={label}
+      InputLabelProps={{ shrink: true }}
     ></CssTextField>
   );
 };

@@ -1,10 +1,10 @@
-import { ethers } from "ethers";
-import * as paillierBigint from "paillier-bigint";
+import { ethers } from 'ethers';
+import * as paillierBigint from 'paillier-bigint';
 
-import Election from "../artifacts/contracts/Election.sol/Election.json";
-import { electionAddress, maxVotes, pubKey } from "../Election";
-import VoteResult from "../types/VoteResult";
-import { handleRevert } from "./Common";
+import Election from '../artifacts/contracts/Election.sol/Election.json';
+import { electionAddress, maxVotes, pubKey } from '../Common';
+import VoteResult from '../types/VoteResult';
+import { handleRevert } from './Common';
 
 declare let window: any;
 export function tallyVotes(votes: string[]) {
@@ -81,6 +81,8 @@ export async function publishProofs(
       );
       await transaction.wait();
     } catch (err: unknown) {
+      console.log(err);
+      console.log(typeof err);
       handleRevert(err);
     }
   }
@@ -113,6 +115,7 @@ export async function getE() {
     );
     try {
       const e = await contract.e();
+      console.log(e);
       return e;
     } catch (err: unknown) {
       handleRevert(err);

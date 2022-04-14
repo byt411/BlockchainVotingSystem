@@ -1,8 +1,9 @@
-import { ethers } from "ethers";
+import { ethers } from 'ethers';
 
-import Election from "../artifacts/contracts/Election.sol/Election.json";
-import { electionAddress } from "../Election";
-import { handleRevert } from "./Common";
+import Election from '../artifacts/contracts/Election.sol/Election.json';
+import { electionAddress } from '../Common';
+import VoteResult from '../types/VoteResult';
+import { handleRevert } from './Common';
 
 declare let window: any;
 export async function getResults() {
@@ -16,7 +17,9 @@ export async function getResults() {
     try {
       const results = await contract.getResults();
 
-      return results;
+      return results.filter(function (result: VoteResult) {
+        return result.option.name !== "";
+      });
     } catch (err: unknown) {
       handleRevert(err);
     }
