@@ -189,6 +189,11 @@ function PublishResults() {
                 </SimpleButton>
               </Grid>
               <Grid item xs={12}>
+                <SimpleButton onClick={() => publishResults(calculatedResults)}>
+                  Publish Vote Counts
+                </SimpleButton>
+              </Grid>
+              <Grid item xs={12}>
                 <SimpleButton
                   onClick={() =>
                     publishProofs(
@@ -202,11 +207,6 @@ function PublishResults() {
                   }
                 >
                   Publish Proofs
-                </SimpleButton>
-              </Grid>
-              <Grid item xs={12}>
-                <SimpleButton onClick={() => publishResults(calculatedResults)}>
-                  Publish Vote Counts
                 </SimpleButton>
               </Grid>
             </Grid>

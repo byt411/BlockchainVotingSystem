@@ -37,31 +37,6 @@ contract Election {
         string memory _pubkeyG,
         address _creator
     ) {
-        /* options[0] = VoteOption(
-            "Partido Popular",
-            "PP",
-            "https://upload.wikimedia.org/wikipedia/commons/3/38/PP_icono_2019.svg",
-            0
-        );
-        options[1] = VoteOption(
-            "Partido Socialista Obrero Espanol",
-            "PSOE",
-            "https://upload.wikimedia.org/wikipedia/commons/4/41/Logotipo_del_PSOE.svg",
-            1
-        );
-        options[2] = VoteOption(
-            "Unidas Podemos",
-            "UP",
-            "https://upload.wikimedia.org/wikipedia/commons/7/7d/Logo_Unidas_Podemos_2019b.png",
-            2
-        );
-        options[3] = VoteOption(
-            "Ciudadanos",
-            "Cs",
-            "https://upload.wikimedia.org/wikipedia/commons/7/76/Logo_oficial_Ciudadanos.svg",
-            3
-        );
-        */
         for (uint256 i = 0; i < _options.length; i++) {
             options[i] = VoteOption(
                 _options[i].name,
@@ -89,11 +64,15 @@ contract Election {
             msg.sender == creator,
             "You are not authorized to perform this action."
         );
-        require(
-            proofPublished,
-            "The verification proof has not yet been published."
-        );
         require(!resultsPublished, "The results have already been published.");
+        uint256 totalVoteCount = 0;
+        for (uint256 i = 0; i < submittedResults.length; i++) {
+            totalVoteCount += submittedResults[i].count;
+        }
+        require(
+            totalVoteCount == votes.length,
+            "Number of votes cast and votes tallied do not match."
+        );
         for (uint256 i = 0; i < submittedResults.length; i++) {
             results[i].count = submittedResults[i].count;
         }
@@ -113,6 +92,10 @@ contract Election {
             "You are not authorized to perform this action."
         );
         require(block.timestamp > endtime, "Election is still in progress.");
+        require(
+            proofPublished,
+            "The election results have not yet been published."
+        );
         require(
             !proofPublished,
             "The verification proof has already been published."

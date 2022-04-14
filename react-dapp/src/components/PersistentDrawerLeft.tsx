@@ -119,7 +119,7 @@ const PersistentDrawerLeft: React.FC<PersistentDrawerProps> = ({
           <ListItem>
             <Typography variant="body2">{electionTitle}</Typography>
           </ListItem>
-          <ListItemButton component={Link} to="/select">
+          <ListItemButton component={Link} to="/">
             <ListItemIcon>
               <CompareArrows />
             </ListItemIcon>
@@ -131,7 +131,7 @@ const PersistentDrawerLeft: React.FC<PersistentDrawerProps> = ({
         </List>
         <Divider />
         <List>
-          <ListItemButton component={Link} to="/">
+          <ListItemButton component={Link} to="/vote">
             <ListItemIcon>
               <HowToVoteOutlined />
             </ListItemIcon>

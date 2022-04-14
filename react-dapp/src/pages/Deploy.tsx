@@ -13,7 +13,7 @@ import SimpleButton from '../components/SimpleButton';
 import SimpleDialog from '../components/SimpleDialog';
 import SimpleInput from '../components/SimpleInput';
 import VoteOptionEntry from '../components/VoteOptionEntry';
-import { getCreator, requestAccount } from '../functions/Common';
+import { requestAccount } from '../functions/Common';
 import { deployElection } from '../functions/Deploy';
 import VoteOption from '../types/VoteOption';
 
@@ -58,6 +58,7 @@ function Deploy() {
     const tempArray: React.ReactElement[] = [
       <VoteOptionEntry
         voteOption={new VoteOption("", "", "", optionArray.length)}
+        key={optionArray.length}
       ></VoteOptionEntry>,
     ];
 
@@ -91,12 +92,9 @@ function Deploy() {
       },
     },
   });
-  const [creator, setCreator] = useState<string>("");
   const [currentAddress, setCurrentAddress] = useState<string>("");
   useEffect(() => {
     async function initialLoad() {
-      const creator = await getCreator();
-      setCreator(creator);
       const address = await requestAccount();
       setCurrentAddress(address[0]);
     }
@@ -107,6 +105,7 @@ function Deploy() {
   >([
     <VoteOptionEntry
       voteOption={new VoteOption("", "", "", 0)}
+      key={0}
     ></VoteOptionEntry>,
   ]);
   const color = "white";
@@ -115,7 +114,7 @@ function Deploy() {
     <>
       <div className="App">
         <header className="App-header">
-          <PersistentDrawerLeft showCreator={currentAddress === creator} />
+          <PersistentDrawerLeft showCreator={false} />
           <br />
           <br />
 
@@ -165,6 +164,7 @@ function Deploy() {
               direction="column"
               alignItems="center"
               justifyContent="center"
+              spacing={5}
             >
               {optionArray}
             </Grid>

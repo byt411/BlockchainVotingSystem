@@ -115,6 +115,7 @@ export async function getE() {
     );
     try {
       const e = await contract.e();
+      console.log(e);
       return e;
     } catch (err: unknown) {
       handleRevert(err);

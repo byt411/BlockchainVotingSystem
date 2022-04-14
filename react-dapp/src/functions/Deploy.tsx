@@ -18,11 +18,13 @@ export async function deployElection(
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
     const contract = new ethers.Contract(deployerAddress, Deployer.abi, signer);
+    const e = BigInt(Math.floor(Math.random() * 100000)).toString();
+    console.log(e);
     try {
       const transaction = await contract.deployElection(
         options,
         Number(endtime),
-        BigInt(Math.floor(Math.random() * 1000000000000)),
+        e,
         title,
         pubKey.encrypt(BigInt(0)).toString(),
         pubKey.n.toString(),
