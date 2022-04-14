@@ -10,7 +10,7 @@ declare let window: any;
 
 export async function deployElection(
   options: VoteOption[],
-  endtime: string,
+  endtime: number,
   title: string,
   pubKey: paillierBigint.PublicKey
 ) {
@@ -23,7 +23,7 @@ export async function deployElection(
     try {
       const transaction = await contract.deployElection(
         options,
-        Number(endtime),
+        endtime,
         e,
         title,
         pubKey.encrypt(BigInt(0)).toString(),

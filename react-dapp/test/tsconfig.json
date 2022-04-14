@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+      "target": "es2018",
+      "module": "commonjs",
+      "strict": true,
+      "esModuleInterop": true,
+      "outDir": "dist",
+      "jsx": "preserve",
+    },
+    "jsx": "react",
+    "include": ["../../src/types/*"],
+    "files": ["../hardhat.config.ts"]
+
+  }

@@ -29,7 +29,7 @@ function Deploy() {
       2048,
       true
     );
-    const endTimestamp = (endDate?.getTime() / 1000).toString();
+    const endTimestamp = Math.ceil(endDate?.getTime() / 1000);
     const electionAddress = await deployElection(
       options,
       endTimestamp,
