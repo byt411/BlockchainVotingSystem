@@ -122,7 +122,7 @@ function Deploy() {
             <Grid
               container
               item
-              xs={5}
+              xs={4}
               spacing={2}
               alignItems="center"
               justifyContent="center"
@@ -160,7 +160,7 @@ function Deploy() {
             <Grid
               container
               item
-              xs={5}
+              xs={2}
               direction="column"
               alignItems="center"
               justifyContent="center"
@@ -168,16 +168,8 @@ function Deploy() {
             >
               {optionArray}
             </Grid>
-            <Grid
-              container
-              item
-              xs={2}
-              alignItems="center"
-              justifyContent="center"
-            >
-              <Grid item xs={12}>
-                <SimpleButton onClick={createElection}>Deploy</SimpleButton>
-              </Grid>
+            <Grid item xs={4} alignItems="center" justifyContent="center">
+              <SimpleButton onClick={createElection}>Deploy</SimpleButton>
             </Grid>
           </Grid>
           {electionDeployed && (

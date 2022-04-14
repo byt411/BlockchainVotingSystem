@@ -64,13 +64,14 @@ contract Election {
             msg.sender == creator,
             "You are not authorized to perform this action."
         );
+        require(block.timestamp > endtime, "Election is still in progress.");
         require(!resultsPublished, "The results have already been published.");
         uint256 totalVoteCount = 0;
         for (uint256 i = 0; i < submittedResults.length; i++) {
             totalVoteCount += submittedResults[i].count;
         }
         require(
-            totalVoteCount == votes.length,
+            totalVoteCount == votes.length - 1,
             "Number of votes cast and votes tallied do not match."
         );
         for (uint256 i = 0; i < submittedResults.length; i++) {
@@ -93,7 +94,7 @@ contract Election {
         );
         require(block.timestamp > endtime, "Election is still in progress.");
         require(
-            proofPublished,
+            resultsPublished,
             "The election results have not yet been published."
         );
         require(
