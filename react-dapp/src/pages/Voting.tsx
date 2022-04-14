@@ -2,17 +2,19 @@ import './Voting.css';
 
 import React, { useEffect, useState } from 'react';
 
-import { Grid } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 
 import { electionAddress } from '../Common';
 import PersistentDrawerLeft from '../components/PersistentDrawerLeft';
 import SimpleDialog from '../components/SimpleDialog';
 import VoteOptionCard from '../components/VoteOptionCard';
-import { getCreator, getOptions, recordVote, requestAccount } from '../functions/Common';
+import { getCreator, getOptions, requestAccount } from '../functions/Common';
+import { recordVote } from '../functions/Voting';
 import VoteOption from '../types/VoteOption';
 
 function Voting() {
-  // store greeting in local state
+  const [message, setMessage] = useState<JSX.Element>(<></>);
+  const [voteCast, setVoteCast] = useState<boolean>(false);
   const [randomizedOptions, setRandomOptions] = useState<VoteOption[]>([]);
   const [options, setOptions] = useState<VoteOption[]>([]);
   const [creator, setCreator] = useState<string>("");
@@ -29,6 +31,23 @@ function Voting() {
       [array[i], array[j]] = [array[j], array[i]];
     }
     return array;
+  }
+
+  async function castVote(option: VoteOption) {
+    const response = await recordVote(option);
+    const timestamp = new Date(response.timestamp * 1000);
+    setMessage(
+      <>
+        <Typography variant="body2">
+          Your vote for {option.name} has been cast successfully!
+        </Typography>
+        <Typography variant="body2">Encrypted Vote:</Typography>
+        <Typography variant="caption">{response.vote}</Typography>
+        <Typography variant="body2">Vote recorded at:</Typography>
+        <Typography variant="caption">{timestamp.toUTCString()}</Typography>
+      </>
+    );
+    setVoteCast(true);
   }
 
   useEffect(() => {
@@ -59,7 +78,7 @@ function Voting() {
             {randomizedOptions.map((x, y) => (
               <Grid item key={y}>
                 <VoteOptionCard
-                  onClick={() => recordVote(x)}
+                  onClick={() => castVote(x)}
                   name={x.name}
                   acronym={x.acronym}
                   logourl={x.logourl}
@@ -69,6 +88,9 @@ function Voting() {
           </Grid>
         </header>
       </div>
+      {voteCast && (
+        <SimpleDialog message={message} title={"Success!"}></SimpleDialog>
+      )}
       {electionAddress === "" && (
         <SimpleDialog message="You have not selected an election!"></SimpleDialog>
       )}

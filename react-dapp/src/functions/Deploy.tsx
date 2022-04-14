@@ -19,7 +19,6 @@ export async function deployElection(
     const signer = provider.getSigner();
     const contract = new ethers.Contract(deployerAddress, Deployer.abi, signer);
     try {
-      const random = require("random-bigint");
       const transaction = await contract.deployElection(
         options,
         Number(endtime),

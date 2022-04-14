@@ -7,3 +7,8 @@ struct VoteOption {
     string logourl;
     uint16 power;
 }
+
+struct VoteResult {
+    VoteOption option;
+    uint32 count;
+}

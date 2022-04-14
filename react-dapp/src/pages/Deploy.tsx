@@ -19,7 +19,6 @@ declare let window: any;
 
 function Deploy() {
   const [electionDeployed, setElectionDeployed] = useState<boolean>(false);
-  const [address, setAddress] = useState<string>("");
   const [message, setMessage] = useState<JSX.Element>(<></>);
   async function createElection() {
     const options = optionArray.map((option: any) => option.props.voteOption);
@@ -34,7 +33,6 @@ function Deploy() {
       publicKey
     );
     setElectionDeployed(true);
-    setAddress(electionAddress);
     setMessage(
       <>
         <Typography variant="body2">Election deployed at address:</Typography>
